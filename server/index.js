@@ -13,20 +13,22 @@ const io = socketio(server);
 app.use(cors());
 app.use(router);
 
-var mySql = require('mysql');
+var dbClass = require('./DbClass');
+db = new dbClass();
 
-//connection 은 한정되어 있어서 풀을 만들어 그 안에서 사용한다
-//connection 할때도 비용이 들어감, 만들고 닫고
+// var mySql = require('mysql');
 
-var pool = mySql.createPool({
-  connectionLimit: 10,            //접속을 10개 만들고 10개를 재사용
-  host: 'chat-db.czkuabyjl3ag.ap-northeast-2.rds.amazonaws.com',
-  user: 'admin',
-  password: '12345678',   //MySql 설치할때의 비번을 입력하면 됨!!
-  database: 'chat_db',
-  debug: false
-});
+// //connection 은 한정되어 있어서 풀을 만들어 그 안에서 사용한다
+// //connection 할때도 비용이 들어감, 만들고 닫고
 
+// var pool = mySql.createPool({
+//   connectionLimit: 10,            //접속을 10개 만들고 10개를 재사용
+//   host: 'chat-db.czkuabyjl3ag.ap-northeast-2.rds.amazonaws.com',
+//   user: 'admin',
+//   password: '12345678',   //MySql 설치할때의 비번을 입력하면 됨!!
+//   database: 'chat_db',
+//   debug: false
+// });
 
 io.on('connect', (socket) => {
   socket.on('join', ({ name, room }, callback) => {
@@ -43,7 +45,7 @@ io.on('connect', (socket) => {
     io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
 
 
-    pool.getConnection(function (err, poolConn) {
+    db.getPool().getConnection(function (err, poolConn) {
       if (err) {
         if (poolConn) {
           poolConn.release();     //pool 반환처리
@@ -95,37 +97,9 @@ io.on('connect', (socket) => {
     callback();
   });
 
-  socket.on('signUp', (sign_name, sign_id, sign_password) => {
-    pool.getConnection(
-      function (err, poolConn) {
-        if (err) {
-          if (poolConn) {
-            poolConn.release();        // 사용한후 해제(반납)한다
-          }
-          // callback(err, null);
-          return;
-        }
-        console.log('데이터베이스 연결 스레드 아이디' + poolConn.threadId);
-        var data = { login_id: sign_id, name: sign_name, password: sign_password };
-
-        //users 테이블에 데이터 추가
-        var exec = poolConn.query('insert into USER_TABLE set ?', data,
-          function (err, result) {
-            poolConn.release();
-            console.log('실행된 SQL : ' + exec.sql);
-
-            if (err) {
-              console.log('sql 실행 시 에러 발생');
-              // callback(err, null);
-              return;
-            }
-
-            // callback(null, result);
-          }
-        );
-      }
-    );
-  });
+  // socket.on('signUp', (sign_name, sign_id, sign_password) => {
+    
+  // });
 
   socket.on('sendMessage', (message, callback) => {
     const user = getUser(socket.id);

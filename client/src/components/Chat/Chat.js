@@ -14,7 +14,7 @@ const ENDPOINT = 'http://localhost:5000/'
 
 let socket;
 
-const Chat = ({ location }) => {
+const Chat = ({ location, history }) => {
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
   const [users, setUsers] = useState('');
@@ -50,7 +50,8 @@ const Chat = ({ location }) => {
     socket.on('login', message => {
       console.log(message)
       if (message == 'false') {
-        window.history.back();
+        // window.history.back();
+        history.push("/");
       }
     });
   }, []);
