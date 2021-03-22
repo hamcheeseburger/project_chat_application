@@ -22,15 +22,15 @@ const Chat = ({ location }) => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    const { name, password } = queryString.parse(location.search);
-    const room = "rooom"
-    
+    const { name, room } = queryString.parse(location.search);
+    // const room = "rooom"
+
     socket = io(ENDPOINT);
 
     setRoom(room);
     setName(name)
 
-    socket.emit('join', { name, password }, (error) => {
+    socket.emit('join', { name, room }, (error) => {
       if (error) {
         alert(error);
       }
@@ -42,8 +42,16 @@ const Chat = ({ location }) => {
       setMessages(messages => [...messages, message]);
     });
 
+    // 참가자 갱신
     socket.on("roomData", ({ users }) => {
       setUsers(users);
+    });
+
+    socket.on('login', message => {
+      console.log(message)
+      if (message == 'false') {
+        window.history.back();
+      }
     });
   }, []);
 
