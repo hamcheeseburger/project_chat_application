@@ -19,10 +19,16 @@ export default function SignUp({ history }) {
         })
             .then(function (response) {
                 console.log(response);
+                console.log(response.data.response);
 
-                alert("회원가입 완료");
-                // root페이지로 이동
-                history.push("/");
+                if (response.data.response == 'true') {
+                    alert("회원가입 완료");
+                    // root페이지로 이동
+                    history.push("/");
+                } else {
+                    alert("회원가입 실패 (db에 login_id가 이미 존재하는 경우)");
+                }
+
             })
             .catch(function (error) {
                 alert("회원가입 실패");

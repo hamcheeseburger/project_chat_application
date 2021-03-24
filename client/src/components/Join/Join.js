@@ -23,9 +23,9 @@ export default function SignIn() {
         {/* <Link to={`/signUp`}>
           <button className={'button mt-20'} type="submit">Sign Up</button>
         </Link> */}
-        <p> </p>
+
         <Link to={`/signUp`}>
-          <a>SIGN UP</a>
+          <p>SIGN UP</p>
         </Link>
       </div>
     </div>

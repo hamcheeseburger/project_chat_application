@@ -38,16 +38,15 @@ router.post("/signUp", jsonParser, function (req, res, next) {
           if (err) {
             console.log('sql 실행 시 에러 발생');
             // callback(err, null);
+            res.send({ response: "false" }).status(200);
             return;
           }
-
-          // callback(null, result);
+          res.send({ response: "true" }).status(200);
         }
       );
+
     }
   );
-
-  res.send({ response: "Sign up end" }).status(200);
 });
 
 module.exports = router;

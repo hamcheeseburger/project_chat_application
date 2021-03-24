@@ -102,10 +102,6 @@ io.on("connect", (socket) => {
     callback();
   });
 
-  // socket.on('signUp', (sign_name, sign_id, sign_password) => {
-
-  // });
-
   socket.on("sendMessage", (message, callback) => {
     const user = getUser(socket.id);
 
