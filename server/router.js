@@ -5,13 +5,14 @@ var dbClass = require('./DbClass');
 db = new dbClass();
 
 // create application/json parser
-var jsonParser = require('body-parser').json();
+// var jsonParser = require('body-parser').json();
 
 router.get("/", (req, res) => {
   res.send({ response: "Server is up and running." }).status(200);
 });
 
-router.post("/signUp", jsonParser, function (req, res, next) {
+// body-parser 대체로 express.json() 사용
+router.post("/signUp", express.json(), function (req, res, next) {
   console.log("router sign up");
   var signloginId = req.body.loginId;
   var signpassword = req.body.password;

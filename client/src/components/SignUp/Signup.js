@@ -8,9 +8,15 @@ export default function SignUp({ history }) {
     const [signId, setSignId] = useState('');
     const [signName, setSignName] = useState('');
     const [signPassword, setSignPassword] = useState('');
+    const [signPasswordCheck, setSignPasswordCheck] = useState('');
 
     const onSubmit = e => {
         console.log("submit");
+
+        if (signPassword != signPasswordCheck) {
+            alert('비밀번호가 일치하지 않습니다');
+            return;
+        }
 
         axios.post('http://localhost:5000/signUp', {
             'loginId': signId,
@@ -31,7 +37,7 @@ export default function SignUp({ history }) {
 
             })
             .catch(function (error) {
-                alert("회원가입 실패");
+                alert("에러 발생");
                 console.log(error);
             });
     };
@@ -47,10 +53,16 @@ export default function SignUp({ history }) {
                     <input placeholder="password" className="joinInput mt-20" type="password" onChange={(event) => setSignPassword(event.target.value)} />
                 </div>
                 <div>
+                    <input placeholder="password check" className="joinInput mt-20" type="password" onChange={(event) => setSignPasswordCheck(event.target.value)} />
+                </div>
+                <div>
                     <input placeholder="name" className="joinInput mt-20" type="text" onChange={(event) => setSignName(event.target.value)} />
                 </div>
 
                 <button onClick={onSubmit} className={'button mt-20'} type="submit">Sign Up</button>
+                <Link to={`/`}>
+                    <p>HOME</p>
+                </Link>
             </div>
         </div>
     );

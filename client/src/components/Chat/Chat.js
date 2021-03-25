@@ -8,6 +8,7 @@ import InfoBar from "../InfoBar/InfoBar";
 import UserInfoBar from "../UserInfoBar/UserInfoBar";
 import Input from "../Input/Input";
 import ChatRoom from "../ChatRoom/ChatRoom";
+import { Link } from "react-router-dom";
 
 import "./Chat.css";
 
@@ -68,6 +69,11 @@ const Chat = ({ location, history }) => {
 
   return (
     <div className="outerContainer">
+      <div className="topContainer">
+      {/* <Link to={`/`}>
+                    <p>HOME</p>
+      </Link> */}
+      </div>
       <div className="roomContainer">
         <UserInfoBar name={name} />
         <ChatRoom room={room} />
