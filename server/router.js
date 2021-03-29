@@ -51,6 +51,49 @@ router.post("/signUp", express.json(), function (req, res, next) {
   );
 });
 
+router.post("/getRooms", express.json(), function (req, res, next) {
+  console.log("router get rooms");
+  var userId = req.body.userId;
+
+  db.getPool().getConnection(
+    function (err, poolConn) {
+      if (err) {
+        if (poolConn) {
+          poolConn.release();        // 사용한후 해제(반납)한다
+        }
+        // callback(err, null);
+        return;
+      }
+      console.log('데이터베이스 연결 스레드 아이디' + poolConn.threadId);
+      //var data = { login_id: signloginId };
+
+      //PARTICIPANT_TABLE에서 룸목록 찾기
+      var exec = poolConn.query('SELECT r.name FROM CHAT_ROOM_TABLE r, PARTICIPANT_TABLE p, USER_TABLE u WHERE r.room_id = p.room_id AND u.user_id = ?', userId,
+        function (err, rows) {
+          poolConn.release();
+          console.log('실행된 SQL : ' + exec.sql);
+
+          if (err) {
+            // callback(err, null);
+            return;
+        }
+
+        if (rows.length > 0) {
+            console.log('room 찾음');
+            console.log(rows);
+            // callback(null, rows);
+            // socket.emit("getrooms", rows);
+            return rows;
+        } else {
+            console.log('room 찾지 못함');
+            // callback(null, null);
+          }
+        });
+
+    }
+  );
+});
+
 router.post("/roomAdd", express.json(), function (req, res) {
   var plusRoomName = req.body.plusRoomName;
   var plusRoomPassword = req.body.plusRoomPassword;
