@@ -1,3 +1,11 @@
+
+.roomInput {
+  border-radius: 0;
+  padding: 15px 20px;
+  width: 100%;
+  border-color: #d5e5ff;
+}
+
 .outerContainer {
   display: flex;
   /* flex-wrap: wrap; */
@@ -7,9 +15,14 @@
   background-color: #1a1a1d;
 }
 
-.topContainer {
-  /* flex: auto; */
+.plusDiv {
+  align-content: center;
+  height: 50px;
+  background-color: #e3f2fd;
+}
 
+.plusBtn {
+  float: right;
 }
 
 .roomContainer {
@@ -18,7 +31,7 @@
   width: 15%;
   background: #ffffff;
   justify-content: space-between;
-  border-right: #42a5f5 2px solid;
+  border-right: #ffffff 2px solid;
   border-radius: 8px 0 0 0;
 }
 
@@ -29,7 +42,7 @@
   background: #ffffff;
   border-radius: 8px;
   height: 60%;
-  width: 35%;
+  width: 40%;
 }
 
 @media (min-width: 320px) and (max-width: 480px) {
@@ -43,12 +56,13 @@
   }
 
   /* 창이 줄어들었을 때, 대화창만 보이게 함 */
-  .roomContainer, .topContainer {
+  .roomContainer, .topContainer{
     display: none;
   }
 }
 
 @media (min-width: 480px) and (max-width: 1200px) {
+  
   .container {
     width: 60%;
   }

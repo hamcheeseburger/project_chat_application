@@ -84,11 +84,13 @@ io.on("connect", (socket) => {
 
           if (rows.length > 0) {
             console.log("사용자 찾음");
-            // callback(null, rows);
-            socket.emit("login", "true");
+            var string = JSON.stringify(rows);
+            var json = JSON.parse(string);
+
+            socket.emit("login", json[0]._id);
           } else {
             console.log("사용자 찾지 못함");
-            socket.emit("login", "false");
+            socket.emit("login", -1);
             // callback(null, null);
           }
         }

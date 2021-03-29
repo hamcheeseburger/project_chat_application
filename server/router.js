@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 var dbClass = require('./DbClass');
+require("date-utils");
 db = new dbClass();
 
 // create application/json parser
@@ -48,6 +49,87 @@ router.post("/signUp", express.json(), function (req, res, next) {
 
     }
   );
+});
+
+router.post("/roomAdd", express.json(), function (req, res) {
+  var plusRoomName = req.body.plusRoomName;
+  var plusRoomPassword = req.body.plusRoomPassword;
+  var userId = req.body.userId;
+  var now = (new Date()).toFormat('YYYY-MM-DD HH24:MI:SS');
+  var roomId = -1;
+
+  db.getPool().getConnection(
+    function (err, poolConn) {
+      if (err) {
+        if (poolConn) {
+          // error 시 connection release
+          poolConn.release();
+        }
+
+        return;
+      }
+      console.log('데이터베이스 연결 스레드 아이디' + poolConn.threadId);
+
+      // Transaction (query를 중첩구조로 실행함)
+      poolConn.beginTransaction(function (err) {
+        // Room 데이터 삽입
+        var roomData = { name: plusRoomName, password: plusRoomPassword, created_date: now };
+        var exec = poolConn.query('insert into CHAT_ROOM_TABLE set ?', roomData,
+          function (err, result) {
+            console.log('실행된 SQL : ' + exec.sql);
+
+            if (err) {
+              console.log('sql 실행 시 에러 발생');
+
+              res.send({ response: "false" }).status(200);
+              // 실패시 rollback
+              return poolConn.rollback(function () {
+                throw err;
+              });
+            }
+
+            roomId = result.insertId;
+            console.log("id :" + roomId);
+
+            // Participant 데이터 삽입
+            var parcitipant_data = { user_id: userId, room_id: roomId };
+            var exec2 = poolConn.query('insert into PARTICIPANT_TABLE set ?', parcitipant_data,
+              function (err, result) {
+                console.log('실행된 SQL : ' + exec2.sql);
+
+                if (err) {
+                  console.log('sql 실행 시 에러 발생');
+
+                  res.send({ response: "false" }).status(200);
+                  // 실패 시 rollback
+                  return poolConn.rollback(function () {
+                    throw err;
+                  });
+                }
+
+                // 성공 시 commit
+                poolConn.commit(function (err) {
+                  if (err) {
+                    return poolConn.rollback(function () {
+                      throw err;
+                    });
+                  }
+                });
+
+                // 성공메세지 response
+                res.send({ response: "true" }).status(200);
+              }
+            );
+          }
+        );
+
+        // connection release
+        poolConn.release();
+
+      });
+    }
+  );
+
 });
 
 module.exports = router;
