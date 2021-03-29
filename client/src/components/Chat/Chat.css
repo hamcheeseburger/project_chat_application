@@ -1,9 +1,28 @@
+#plus{
+  float: right;
+  height:25px;
+  width:25px;
+  border-radius:50%;
+}
+
+#plus:hover{
+  background-color:#2979ff;
+  /* border:none; */
+}
+
+
+.plusDiv {
+  align-content: center;
+  height: 50px;
+  background-color: #e3f2fd;
+  padding: 10px;
+}
 
 .roomInput {
   border-radius: 0;
   padding: 15px 20px;
   width: 100%;
-  border-color: #d5e5ff;
+  border-color: #15181d;
 }
 
 .outerContainer {
@@ -15,15 +34,6 @@
   background-color: #1a1a1d;
 }
 
-.plusDiv {
-  align-content: center;
-  height: 50px;
-  background-color: #e3f2fd;
-}
-
-.plusBtn {
-  float: right;
-}
 
 .roomContainer {
   align-items: center;
@@ -31,7 +41,7 @@
   width: 15%;
   background: #ffffff;
   justify-content: space-between;
-  border-right: #ffffff 2px solid;
+  border-right: #c5c5c5 2px solid;
   border-radius: 8px 0 0 0;
 }
 

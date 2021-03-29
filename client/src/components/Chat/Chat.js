@@ -133,6 +133,7 @@ const Chat = ({ location, history }) => {
       <div className="roomContainer">
         <UserInfoBar name={name} />
         <div className="plusDiv">
+          <a>My Rooms</a>
           <button id="plus" onClick={openPlusRoom}>+</button>
         </div>
         <ChatRoom room={room} />
