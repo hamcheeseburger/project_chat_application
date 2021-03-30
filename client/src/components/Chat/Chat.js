@@ -33,7 +33,7 @@ const Chat = ({ location, history }) => {
   const [plusRoomName, setPlusRoomName] = useState("");
   const [plusRoomPass, setPlusRoomPass] = useState("");
   const [plusRoomPassCheck, setPlusRoomPassCheck] = useState("");
-  const [userId, setUserId] = useState(-1);
+  const [userId, setUserId] = useState(0);
 
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
@@ -63,15 +63,17 @@ const Chat = ({ location, history }) => {
 
     socket.on("login", (message) => {
       console.log(message);
-      if (message == -1) {
-
-        history.push("/");
+      if (message != -1) {
+        // 로그인 성공시, message로 userId 넘겨줌
+        setUserId(message);
+        console.log(userId);
         return;
-      }
 
-      // 로그인 성공시, message로 userId 넘겨줌
-      setUserId(message);
+      }
+      history.push("/");
+
     });
+
   }, []);
 
   const sendMessage = (event) => {
@@ -133,7 +135,7 @@ const Chat = ({ location, history }) => {
       <div className="roomContainer">
         <UserInfoBar name={name} />
         <div className="plusDiv">
-          <a>My Rooms</a>
+          <a className="myRoomText">My Rooms</a>
           <button id="plus" onClick={openPlusRoom}>+</button>
         </div>
         <ChatRoom room={room} />

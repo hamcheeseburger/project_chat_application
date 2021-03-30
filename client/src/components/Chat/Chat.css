@@ -6,16 +6,17 @@
 }
 
 #plus:hover{
-  background-color:#2979ff;
+  background-color:#347efd;
   /* border:none; */
 }
 
 
 .plusDiv {
   align-content: center;
-  height: 50px;
+  height: 6vh;
   background-color: #e3f2fd;
   padding: 10px;
+  border-bottom: solid 1px #c5c5c5;
 }
 
 .roomInput {
@@ -34,6 +35,10 @@
   background-color: #1a1a1d;
 }
 
+.myRoomText {
+  font-weight: bold;
+  font-size: 20px;
+}
 
 .roomContainer {
   align-items: center;
@@ -55,7 +60,7 @@
   width: 40%;
 }
 
-@media (min-width: 320px) and (max-width: 480px) {
+@media (min-width: 500px) and (max-width: 500px) {
   .outerContainer {
     height: 100%;
   }

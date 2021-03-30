@@ -65,7 +65,7 @@ io.on("connect", (socket) => {
       console.log("데이터베이스 연결 스레드 아이디" + poolConn.threadId);
 
       var tablename = "USER_TABLE";
-      var columns = ["_id", "name"];
+      var columns = ["user_id", "name"];
 
       //id 와 pw 가 같은것을 조회한다
       var exec = poolConn.query(
@@ -86,8 +86,9 @@ io.on("connect", (socket) => {
             console.log("사용자 찾음");
             var string = JSON.stringify(rows);
             var json = JSON.parse(string);
+            console.log(json[0].user_id)
 
-            socket.emit("login", json[0]._id);
+            socket.emit("login", json[0].user_id);
           } else {
             console.log("사용자 찾지 못함");
             socket.emit("login", -1);
