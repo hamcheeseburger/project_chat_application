@@ -26,6 +26,7 @@ let socket;
 const Chat = ({ location, history }) => {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
+  const [rooms, setRooms] = useState([]);
   const [users, setUsers] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -67,11 +68,12 @@ const Chat = ({ location, history }) => {
         // 로그인 성공시, message로 userId 넘겨줌
         setUserId(message);
         console.log(userId);
-        return;
-
+        // return;
+        getRoomsOfUser(message);
       }
-      history.push("/");
-
+      else {
+        history.push("/");
+      }
     });
   }, []);
 
@@ -84,31 +86,40 @@ const Chat = ({ location, history }) => {
     axios.post('http://localhost:5000/getRooms', {
       "userId": message
     })
-      .then(function (err, rows) {
-        if (err) {
-          console.log('Error!!!');
-          // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-          // res.write('<h1>에러발생</h1>');
-          // res.end();
-          return;
-        }
+      .then(function (response) {
+        // console.log('return!');
+        // console.log(response.data.rows[0]);
+        Object.keys(response.data.rows).forEach(key => rooms.push({name : response.data.rows[key].name}))
+        console.log(rooms);
+        // return;
+        // if (err) {
+        //   console.log('Error!!!');
+        //   // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+        //   // res.write('<h1>에러발생</h1>');
+        //   // res.end();
+        //   return;
+        // }
 
-        if (rows) {
-          console.dir(rows);
-          // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-          // res.write('<h1>Login Success</h1>');
-          // res.write('<h1> user </h1>' + rows[0].name);
-          // res.write('<br><a href="/login2.html"> re login </a>');
-          // res.end();
+        // if (rows) {
+        //   console.dir(rows);
+        //   // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+        //   // res.write('<h1>Login Success</h1>');
+        //   // res.write('<h1> user </h1>' + rows[0].name);
+        //   // res.write('<br><a href="/login2.html"> re login </a>');
+        //   // res.end();
 
-        }
-        else {
-          console.log('empty Error!!!');
-          // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-          // res.write('<h1>user data not exist</h1>');
-          // res.write('<a href="/login2.html"> re login</a>');
-          // res.end();
-        }
+        // }
+        // else {
+        //   console.log('empty Error!!!');
+        //   // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+        //   // res.write('<h1>user data not exist</h1>');
+        //   // res.write('<a href="/login2.html"> re login</a>');
+        //   // res.end();
+        // }
+      })
+      .catch(function (error) {
+        alert("에러 발생");
+        console.log(error);
       });
   };
 
@@ -174,6 +185,7 @@ const Chat = ({ location, history }) => {
           <a className="myRoomText">My Rooms</a>
           <button id="plus" onClick={openPlusRoom}>+</button>
         </div>
+        {/* <ChatRoom rooms={rooms} /> */}
         <ChatRoom room={room} />
       </div>
       <div className="container">

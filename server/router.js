@@ -83,11 +83,12 @@ router.post("/getRooms", express.json(), function (req, res, next) {
             console.log(rows);
             // callback(null, rows);
             // socket.emit("getrooms", rows);
-            return rows;
+            // return rows;
         } else {
             console.log('room 찾지 못함');
             // callback(null, null);
           }
+        res.send({ rows: rows }).status(200);
         });
 
     }
