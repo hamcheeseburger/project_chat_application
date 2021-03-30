@@ -73,8 +73,44 @@ const Chat = ({ location, history }) => {
       history.push("/");
 
     });
-
   }, []);
+
+
+  // 해당 유저의 룸 목록을 가져옴
+  const getRoomsOfUser = (message) => {
+    console.log("Get rooms");
+    // axios post
+    // @문제 : setUserId()가 안먹힌다.
+    axios.post('http://localhost:5000/getRooms', {
+      "userId": message
+    })
+      .then(function (err, rows) {
+        if (err) {
+          console.log('Error!!!');
+          // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+          // res.write('<h1>에러발생</h1>');
+          // res.end();
+          return;
+        }
+
+        if (rows) {
+          console.dir(rows);
+          // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+          // res.write('<h1>Login Success</h1>');
+          // res.write('<h1> user </h1>' + rows[0].name);
+          // res.write('<br><a href="/login2.html"> re login </a>');
+          // res.end();
+
+        }
+        else {
+          console.log('empty Error!!!');
+          // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+          // res.write('<h1>user data not exist</h1>');
+          // res.write('<a href="/login2.html"> re login</a>');
+          // res.end();
+        }
+      });
+  };
 
   const sendMessage = (event) => {
     event.preventDefault();

@@ -32,13 +32,13 @@ db = new dbClass();
 
 io.on("connect", (socket) => {
   socket.on("join", ({ name, room }, callback) => {
-    const { error, user } = addUser({ id: socket.id, name, room });
-    console.log("user.room : " + user.room);
+    //const { error, user } = addUser({ id: socket.id, name, room });
+    //console.log("user.room : " + user.room);
 
-    if (error) return callback(error);
+    // if (error) return callback(error);
 
-    socket.join(user.room);
-
+    //socket.join(user.room);
+    /*
     socket.emit("message", {
       user: "admin",
       text: `${user.name}, welcome to room ${user.room}.`,
@@ -51,7 +51,7 @@ io.on("connect", (socket) => {
       room: user.room,
       users: getUsersInRoom(user.room),
     });
-
+    */
     db.getPool().getConnection(function (err, poolConn) {
       if (err) {
         if (poolConn) {
@@ -79,6 +79,7 @@ io.on("connect", (socket) => {
           if (err) {
             // callback(err, null);
             console.log("error");
+            console.log(err)
             return;
           }
 
