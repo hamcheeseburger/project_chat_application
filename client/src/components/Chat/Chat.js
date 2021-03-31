@@ -27,6 +27,8 @@ const Chat = ({ location, history }) => {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
   const [rooms, setRooms] = useState([]);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -73,12 +75,35 @@ const Chat = ({ location, history }) => {
         console.log(userId);
         // return;
         getRoomsOfUser(message);
+        console.log('rooms are changed!');
+        setRooms(rooms);
+        console.log(rooms);
+
       } else {
         history.push("/");
       }
     });
+
+    const fetchRooms = async () => {
+      console.log('fetchRooms!');
+      setIsError(false);
+      setIsLoading(true);
+      try {
+        const roomsData = rooms;
+       
+        setRooms(roomsData);
+       console.log(rooms);
+      } catch (error) {
+        setIsError(true);
+      }
+      setIsLoading(false);
+    }
+    fetchRooms();
   }, []);
 
+  // function setUpdate() {
+    
+  // }
   // 해당 유저의 룸 목록을 가져옴
   const getRoomsOfUser = (message) => {
     console.log("Get rooms");
@@ -94,7 +119,7 @@ const Chat = ({ location, history }) => {
         Object.keys(response.data.rows).forEach((key) =>
           rooms.push({ name: response.data.rows[key].name })
         );
-        console.log(rooms);
+        console.log(rooms[0].name);
         // return;
         // if (err) {
         //   console.log('Error!!!');
@@ -239,8 +264,14 @@ const Chat = ({ location, history }) => {
             참가
           </button>
         </div>
-        {/* <ChatRoom rooms={rooms} /> */}
-        <ChatRoom room={room} />
+        <div className="chatrooms">
+          <p>{rooms.length}</p>
+        {/* <ChatRoom rooms={rooms} /> */}    
+        {rooms.map(room => (
+          <ChatRoom room={room}/>
+        ))}
+        {/* <ChatRoom room={room} /> */}
+      </div>
       </div>
       <div className="container">
         <InfoBar room={room} />

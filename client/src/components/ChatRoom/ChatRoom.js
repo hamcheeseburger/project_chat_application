@@ -20,11 +20,12 @@ const ChatRoom = ({ room }) => (
 );
 
 // const ChatRoom = ({ rooms }) => {
+//   // console.log(rooms[1]);
 //   return rooms.map(room => (
 //     <div className="chatRoom">
 //     <div className="chatRoomContainer">
 //       <img className="onlineIcon" src={onlineIcon} alt="online icon" />
-//       <h3>{room}</h3>
+//       <h3>{room.name}</h3>
 //     </div>
 //     <div className="rightInnerContainer">
 //       <a href="/">
