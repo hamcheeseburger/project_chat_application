@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import queryString from "query-string";
 import io from "socket.io-client";
 
-import axios from 'axios';
+import axios from "axios";
 
 import TextContainer from "../TextContainer/TextContainer";
 import Messages from "../Messages/Messages";
@@ -11,9 +11,9 @@ import UserInfoBar from "../UserInfoBar/UserInfoBar";
 import Input from "../Input/Input";
 import ChatRoom from "../ChatRoom/ChatRoom";
 import Modal from "../Modal/Modal";
+import ModalParticipate from "../ModalParticipate/ModalParticipate";
 
 import { Link } from "react-router-dom";
-
 
 import plusIcon from "../../icons/plus.png";
 import "./Chat.css";
@@ -33,6 +33,9 @@ const Chat = ({ location, history }) => {
   const [plusRoomName, setPlusRoomName] = useState("");
   const [plusRoomPass, setPlusRoomPass] = useState("");
   const [plusRoomPassCheck, setPlusRoomPassCheck] = useState("");
+  const [participateRoomOpen, setParticipateRoomOpen] = useState(false);
+  const [participateRoomName, setParticipateRoomName] = useState("");
+  const [participateRoomPass, setParticipateRoomPass] = useState("");
   const [userId, setUserId] = useState(0);
 
   useEffect(() => {
@@ -68,25 +71,23 @@ const Chat = ({ location, history }) => {
         setUserId(message);
         console.log(userId);
         return;
-
       }
       history.push("/");
-
     });
   }, []);
-
 
   // 해당 유저의 룸 목록을 가져옴
   const getRoomsOfUser = (message) => {
     console.log("Get rooms");
     // axios post
     // @문제 : setUserId()가 안먹힌다.
-    axios.post('http://localhost:5000/getRooms', {
-      "userId": message
-    })
+    axios
+      .post("http://localhost:5000/getRooms", {
+        userId: message,
+      })
       .then(function (err, rows) {
         if (err) {
-          console.log('Error!!!');
+          console.log("Error!!!");
           // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
           // res.write('<h1>에러발생</h1>');
           // res.end();
@@ -100,10 +101,8 @@ const Chat = ({ location, history }) => {
           // res.write('<h1> user </h1>' + rows[0].name);
           // res.write('<br><a href="/login2.html"> re login </a>');
           // res.end();
-
-        }
-        else {
-          console.log('empty Error!!!');
+        } else {
+          console.log("empty Error!!!");
           // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
           // res.write('<h1>user data not exist</h1>');
           // res.write('<a href="/login2.html"> re login</a>');
@@ -120,6 +119,7 @@ const Chat = ({ location, history }) => {
     }
   };
 
+  // room 추가
   const openPlusRoom = () => {
     console.log("Plus room");
 
@@ -143,22 +143,66 @@ const Chat = ({ location, history }) => {
     }
 
     // axios post
-    axios.post('http://localhost:5000/roomAdd', {
-      "plusRoomName": plusRoomName,
-      "plusRoomPassword": plusRoomPass,
-      "userId": userId
-    })
+    axios
+      .post("http://localhost:5000/roomAdd", {
+        plusRoomName: plusRoomName,
+        plusRoomPassword: plusRoomPass,
+        userId: userId,
+      })
       .then(function (response) {
         console.log(response);
         console.log(response.data.response);
 
-        if (response.data.response == 'true') {
+        if (response.data.response == "true") {
           alert("The Room Added");
           closePlusRoom();
         } else {
           alert("The room is already exist.");
         }
+      })
+      .catch(function (error) {
+        alert("에러 발생");
+        console.log(error);
+      });
+  };
 
+  // room 참가
+  const openParticipateRoom = () => {
+    console.log("Participate room");
+
+    setParticipateRoomOpen(true);
+  };
+
+  const closeParticipateRoom = () => {
+    setParticipateRoomOpen(false);
+  };
+
+  const participateRoom = () => {
+    console.log("Participate");
+    if (participateRoomName == "" || participateRoomPass == "") {
+      alert("Please fill all of the options.");
+      return;
+    }
+
+    // axios post
+    axios
+      .post("http://localhost:5000/roomParticipate", {
+        participateRoomName: participateRoomName,
+        participateRoomPass: participateRoomPass,
+        userId: userId,
+      })
+      .then(function (response) {
+        console.log(response);
+        console.log(response.data.response);
+
+        if (response.data.response == "true") {
+          alert("The Room Participated.");
+          closeParticipateRoom();
+          // } else if (response.data.response == "false") {
+          //   alert("Participation Fail.");
+        } else {
+          alert("Fail.");
+        }
       })
       .catch(function (error) {
         alert("에러 발생");
@@ -172,7 +216,12 @@ const Chat = ({ location, history }) => {
         <UserInfoBar name={name} />
         <div className="plusDiv">
           <a className="myRoomText">My Rooms</a>
-          <button id="plus" onClick={openPlusRoom}>+</button>
+          <button id="plus" onClick={openPlusRoom}>
+            +
+          </button>
+          <button id="participation" onClick={openParticipateRoom}>
+            참가
+          </button>
         </div>
         <ChatRoom room={room} />
       </div>
@@ -187,18 +236,66 @@ const Chat = ({ location, history }) => {
       </div>
       {/* <TextContainer users={users} /> */}
 
+      {/* room 추가 */}
       <div className="ModalDiv">
-        <Modal open={plusRoomOpen} close={closePlusRoom} header="Add Room" add={addPlusRoom}>
+        <Modal
+          open={plusRoomOpen}
+          close={closePlusRoom}
+          header="Add Room"
+          add={addPlusRoom}
+        >
           <div>
-            <input placeholder="Room Name" className="roomInput" type="text" onChange={(event) => setPlusRoomName(event.target.value)} />
+            <input
+              placeholder="Room Name"
+              className="roomInput"
+              type="text"
+              onChange={(event) => setPlusRoomName(event.target.value)}
+            />
           </div>
           <div>
-            <input placeholder="Room password" className="roomInput mt-20" type="password" onChange={(event) => setPlusRoomPass(event.target.value)} />
+            <input
+              placeholder="Room password"
+              className="roomInput mt-20"
+              type="password"
+              onChange={(event) => setPlusRoomPass(event.target.value)}
+            />
           </div>
           <div>
-            <input placeholder="Room password Check" className="roomInput mt-20" type="password" onChange={(event) => setPlusRoomPassCheck(event.target.value)} />
+            <input
+              placeholder="Room password Check"
+              className="roomInput mt-20"
+              type="password"
+              onChange={(event) => setPlusRoomPassCheck(event.target.value)}
+            />
           </div>
         </Modal>
+      </div>
+
+      {/* room 참가 */}
+      <div className="ModalDiv">
+        <ModalParticipate
+          open={participateRoomOpen}
+          close={closeParticipateRoom}
+          header="Participate Room"
+          participate={participateRoom}
+        >
+          <div>
+            <input
+              placeholder="Room Name"
+              className="roomInput"
+              type="text"
+              onChange={(event) => setParticipateRoomName(event.target.value)}
+            />
+          </div>
+          <div>
+            <input
+              placeholder="Room password"
+              className="roomInput mt-20"
+              type="password"
+              onChange={(event) => setParticipateRoomPass(event.target.value)}
+            />
+          </div>
+        </ModalParticipate>
       </div>
     </div>
   );
