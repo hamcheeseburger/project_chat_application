@@ -27,6 +27,7 @@ const Chat = ({ location, history }) => {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
   const [rooms, setRooms] = useState([]);
+  const [isClicked, setIsClicked] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState("");
@@ -100,6 +101,11 @@ const Chat = ({ location, history }) => {
     }
     fetchRooms();
   }, []);
+  // 버튼 클릭 후 룸 목록을 띄운다.
+  const  _onButtonClick = () => {
+    setIsClicked(true);
+    console.log("clicked! Rooms length : " + rooms.length);
+  };
 
   // function setUpdate() {
     
@@ -119,8 +125,10 @@ const Chat = ({ location, history }) => {
         Object.keys(response.data.rows).forEach((key) =>
           rooms.push({ name: response.data.rows[key].name })
         );
-        console.log(rooms[0].name);
+        // console.log(rooms[0].name);
+        
         // return;
+
         // if (err) {
         //   console.log('Error!!!');
         //   // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
@@ -265,11 +273,12 @@ const Chat = ({ location, history }) => {
           </button>
         </div>
         <div className="chatrooms">
-          <p>{rooms.length}</p>
-        {/* <ChatRoom rooms={rooms} /> */}    
-        {rooms.map(room => (
-          <ChatRoom room={room}/>
-        ))}
+        <button onClick={_onButtonClick}>룸 목록</button>
+          {isClicked ?
+              rooms.map(item => <ChatRoom room={item.name}/>)
+            : null
+          }
+        {/* <p>{rooms.length}</p> */}
         {/* <ChatRoom room={room} /> */}
       </div>
       </div>
