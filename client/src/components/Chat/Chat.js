@@ -28,6 +28,9 @@ const Chat = ({ location, history }) => {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
   const [rooms, setRooms] = useState([]);
+  const [isClicked, setIsClicked] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -75,12 +78,40 @@ const Chat = ({ location, history }) => {
         console.log(userId);
         // return;
         getRoomsOfUser(message);
+        console.log('rooms are changed!');
+        setRooms(rooms);
+        console.log(rooms);
+
       } else {
         history.push("/");
       }
     });
-  }, []);
 
+    const fetchRooms = async () => {
+      console.log('fetchRooms!');
+      setIsError(false);
+      setIsLoading(true);
+      try {
+        const roomsData = rooms;
+       
+        setRooms(roomsData);
+       console.log(rooms);
+      } catch (error) {
+        setIsError(true);
+      }
+      setIsLoading(false);
+    }
+    fetchRooms();
+  }, []);
+  // 버튼 클릭 후 룸 목록을 띄운다.
+  const  _onButtonClick = () => {
+    setIsClicked(true);
+    console.log("clicked! Rooms length : " + rooms.length);
+  };
+
+  // function setUpdate() {
+    
+  // }
   // 해당 유저의 룸 목록을 가져옴
   const getRoomsOfUser = (message) => {
     console.log("Get rooms");
@@ -96,8 +127,10 @@ const Chat = ({ location, history }) => {
         Object.keys(response.data.rows).forEach((key) =>
           rooms.push({ name: response.data.rows[key].name })
         );
-        console.log(rooms);
+        // console.log(rooms[0].name);
+        
         // return;
+
         // if (err) {
         //   console.log('Error!!!');
         //   // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
@@ -241,6 +274,7 @@ const Chat = ({ location, history }) => {
             참가
           </button>
         </div>
+<<<<<<< HEAD
         {/* <ChatRoom rooms={rooms} /> */}
         <For of={rooms}>
           {item =>
@@ -248,6 +282,17 @@ const Chat = ({ location, history }) => {
             <li>{item}</li>
           }
         </For>
+=======
+        <div className="chatrooms">
+        <button onClick={_onButtonClick}>룸 목록</button>
+          {isClicked ?
+              rooms.map(item => <ChatRoom room={item.name}/>)
+            : null
+          }
+        {/* <p>{rooms.length}</p> */}
+        {/* <ChatRoom room={room} /> */}
+      </div>
+>>>>>>> refs/remotes/origin/master
       </div>
       <div className="container">
         <InfoBar room={room} />

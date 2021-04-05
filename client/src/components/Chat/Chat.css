@@ -60,6 +60,11 @@
   width: 40%;
 }
 
+.chatrooms {
+  height: 345px;
+  overflow-y:auto;
+}
+
 @media (min-width: 500px) and (max-width: 500px) {
   .outerContainer {
     height: 100%;
