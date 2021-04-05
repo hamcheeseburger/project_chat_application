@@ -5,19 +5,21 @@ import closeIcon from "../../icons/closeIcon.png";
 
 import "./ChatRoom.css";
 
-const ChatRoom = ({ room }) => (
-  <div className="chatRoom">
-    <div className="chatRoomContainer">
-      <img className="onlineIcon" src={onlineIcon} alt="online icon" />
-      <h3>{room}</h3>
+const ChatRoom = ({ room }) => {
+  return (
+    <div className="chatRoom">
+      <div className="chatRoomContainer">
+        <img className="onlineIcon" src={onlineIcon} alt="online icon" />
+        <h3>{room}</h3>
+      </div>
+      <div className="rightInnerContainer">
+        <a href="/">
+          <img src={closeIcon} alt="close icon" />
+        </a>
+      </div>
     </div>
-    <div className="rightInnerContainer">
-      <a href="/">
-        <img src={closeIcon} alt="close icon" />
-      </a>
-    </div>
-  </div>
-);
+  );
+};
 
 // const ChatRoom = ({ rooms }) => {
 //   // console.log(rooms[1]);
@@ -36,6 +38,6 @@ const ChatRoom = ({ room }) => (
 //   ));
 // }
 
- 
+
 
 export default ChatRoom;

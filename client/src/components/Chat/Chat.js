@@ -42,7 +42,9 @@ const Chat = ({ location, history }) => {
   const [participateRoomName, setParticipateRoomName] = useState("");
   const [participateRoomPass, setParticipateRoomPass] = useState("");
   const [userId, setUserId] = useState(0);
-
+  const [show, setShow] = useState(false);
+  const [roomClicked, setRoomClicked] = useState(false);
+  var roomVar;
 
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
@@ -50,7 +52,7 @@ const Chat = ({ location, history }) => {
     socket = io(ENDPOINT);
 
     // setRoom(room);
-    setRoom("임시 방이름");
+    // setRoom("임시 방이름");
     setName(name);
 
     socket.emit("join", { name, room }, (error) => {
@@ -58,9 +60,11 @@ const Chat = ({ location, history }) => {
         alert(error);
       }
     });
+
   }, [ENDPOINT, location.search]);
 
   useEffect(() => {
+    // admin의 메세지를 받아서 뿌리기
     socket.on("message", (message) => {
       setMessages((messages) => [...messages, message]);
     });
@@ -93,9 +97,9 @@ const Chat = ({ location, history }) => {
       setIsLoading(true);
       try {
         const roomsData = rooms;
-       
+
         setRooms(roomsData);
-       console.log(rooms);
+        console.log(rooms);
       } catch (error) {
         setIsError(true);
       }
@@ -103,14 +107,24 @@ const Chat = ({ location, history }) => {
     }
     fetchRooms();
   }, []);
+
+  // useEffect(() => {
+  //   console.log("room changed");
+  //   socket.emit("roomJoin", { name, room }, (error) => {
+  //     if (error) {
+  //       alert(error);
+  //     }
+  //   });
+  // }, [room]);
+
   // 버튼 클릭 후 룸 목록을 띄운다.
-  const  _onButtonClick = () => {
+  const _onButtonClick = () => {
     setIsClicked(true);
     console.log("clicked! Rooms length : " + rooms.length);
   };
 
   // function setUpdate() {
-    
+
   // }
   // 해당 유저의 룸 목록을 가져옴
   const getRoomsOfUser = (message) => {
@@ -128,7 +142,7 @@ const Chat = ({ location, history }) => {
           rooms.push({ name: response.data.rows[key].name })
         );
         // console.log(rooms[0].name);
-        
+
         // return;
 
         // if (err) {
@@ -166,7 +180,7 @@ const Chat = ({ location, history }) => {
     event.preventDefault();
 
     if (message) {
-      socket.emit("sendMessage", message, () => setMessage(""));
+      socket.emit("sendMessage", { message, name, room }, () => setMessage(""));
     }
   };
 
@@ -215,6 +229,49 @@ const Chat = ({ location, history }) => {
         alert("에러 발생");
         console.log(error);
       });
+  };
+
+  const getChatsInRoom = (roomName) => {
+    console.log(roomName);
+    setRoom(roomName);
+    setMessages([]);
+
+    requestChats(roomName);
+
+    // socket.emit("roomJoin", { name, roomName }, (error) => {
+    //   if (error) {
+    //     alert(error);
+    //   }
+    // });
+  };
+
+  const requestChats = (roomName) => {
+    console.log("requestChats");
+    return new Promise((resolve, reject) => {
+      axios
+        .post("http://localhost:5000/getChatsInRoom", {
+          roomName: roomName,
+          name: name,
+          socketId: socket.id
+        })
+        .then(function (response) {
+          var items = response.data.rows;
+          if (items != null) {
+            items.forEach(function (item) {
+              console.log(item);
+              setMessages((messages) => [...messages, item]);
+
+            });
+          }
+          // setMessages((messages) => [...messages, message]);
+          // console.log();
+          // setMessages(response.data.rows);
+        })
+        .catch(function (error) {
+          alert("에러 발생");
+          console.log(error);
+        });
+    });
   };
 
   // room 참가
@@ -274,25 +331,18 @@ const Chat = ({ location, history }) => {
             참가
           </button>
         </div>
-<<<<<<< HEAD
-        {/* <ChatRoom rooms={rooms} /> */}
-        <For of={rooms}>
-          {item =>
-            // <ChatRoom room={item} />
-            <li>{item}</li>
-          }
-        </For>
-=======
         <div className="chatrooms">
-        <button onClick={_onButtonClick}>룸 목록</button>
+          <button onClick={_onButtonClick}>룸 목록</button>
+
           {isClicked ?
-              rooms.map(item => <ChatRoom room={item.name}/>)
+            rooms.map(item =>
+              <li key={item.name} onClick={() => getChatsInRoom(item.name)}><ChatRoom room={item.name} /></li>)
             : null
           }
-        {/* <p>{rooms.length}</p> */}
-        {/* <ChatRoom room={room} /> */}
-      </div>
->>>>>>> refs/remotes/origin/master
+
+          {/* <p>{rooms.length}</p> */}
+          {/* <ChatRoom room={room} /> */}
+        </div>
       </div>
       <div className="container">
         <InfoBar room={room} />

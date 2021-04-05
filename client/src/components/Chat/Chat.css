@@ -9,7 +9,9 @@
   background-color:#347efd;
   /* border:none; */
 }
-
+li{
+  list-style:none;
+  }
 
 .plusDiv {
   align-content: center;

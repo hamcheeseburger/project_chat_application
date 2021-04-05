@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const { addUser, removeUser, getUser, getUsersInRoom } = require("./users");
 var dbClass = require("./DbClass");
 require("date-utils");
 db = new dbClass();
@@ -52,6 +52,62 @@ router.post("/signUp", express.json(), function (req, res, next) {
       }
     );
   });
+});
+
+router.post("/getChatsInRoom", express.json(), function (req, res, next) {
+  var name = req.body.name;
+  var room = req.body.roomName;
+  var socketId = req.body.socketId;
+
+  console.log(socketId);
+
+  db.getPool().getConnection(function (err, poolConn) {
+    if (err) {
+      if (poolConn) {
+        poolConn.release(); // 사용한후 해제(반납)한다
+      }
+      // callback(err, null);
+      return;
+    }
+    console.log("데이터베이스 연결 스레드 아이디" + poolConn.threadId);
+
+    // Room name으로 chats select
+    var exec = poolConn.query(
+      "SELECT u.login_id, c.chat FROM CHAT_ROOM_TABLE r, CHAT_TABLE c, USER_TABLE u WHERE r.room_id = c.room_id and c.user_id = u.user_id and r.name = ?;",
+      room,
+      function (err, rows) {
+        poolConn.release();
+        console.log("실행된 SQL : " + exec.sql);
+
+        if (err) {
+          // callback(err, null);
+          return;
+        }
+
+        if (rows.length > 0) {
+          console.log("Chat 찾음");
+
+          // parse to json array
+          var resultArray = Object.values(JSON.parse(JSON.stringify(rows)))
+          var result = [];
+          resultArray.forEach(function (item) {
+            var json = {
+              user: item.login_id,
+              text: item.chat
+            }
+            result.push(json);
+          });
+
+          console.log(result);
+        } else {
+          console.log("Chat 없음");
+          // callback(null, null);
+        }
+        res.send({ rows: result }).status(200);
+      }
+    );
+  });
+
 });
 
 router.post("/getRooms", express.json(), function (req, res, next) {
