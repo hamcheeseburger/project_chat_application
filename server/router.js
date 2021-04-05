@@ -71,7 +71,7 @@ router.post("/getRooms", express.json(), function (req, res, next) {
 
     //PARTICIPANT_TABLE에서 룸목록 찾기
     var exec = poolConn.query(
-      "SELECT r.name FROM CHAT_ROOM_TABLE r, PARTICIPANT_TABLE p, USER_TABLE u WHERE r.room_id = p.room_id AND u.user_id = ?",
+      "SELECT r.name FROM CHAT_ROOM_TABLE r, PARTICIPANT_TABLE p, USER_TABLE u WHERE r.room_id = p.room_id AND p.user_id=u.user_id AND u.user_id = ?",
       userId,
       function (err, rows) {
         poolConn.release();

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { For } from 'react-loops';
 import queryString from "query-string";
 import io from "socket.io-client";
 
@@ -38,6 +39,7 @@ const Chat = ({ location, history }) => {
   const [participateRoomName, setParticipateRoomName] = useState("");
   const [participateRoomPass, setParticipateRoomPass] = useState("");
   const [userId, setUserId] = useState(0);
+
 
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
@@ -240,7 +242,12 @@ const Chat = ({ location, history }) => {
           </button>
         </div>
         {/* <ChatRoom rooms={rooms} /> */}
-        <ChatRoom room={room} />
+        <For of={rooms}>
+          {item =>
+            // <ChatRoom room={item} />
+            <li>{item}</li>
+          }
+        </For>
       </div>
       <div className="container">
         <InfoBar room={room} />
