@@ -55,11 +55,11 @@ router.post("/signUp", express.json(), function (req, res, next) {
 });
 
 router.post("/getChatsInRoom", express.json(), function (req, res, next) {
-  var name = req.body.name;
+  // var name = req.body.name;
   var room = req.body.roomName;
-  var socketId = req.body.socketId;
+  // var socketId = req.body.socketId;
 
-  console.log(socketId);
+  // console.log(socketId);
 
   db.getPool().getConnection(function (err, poolConn) {
     if (err) {

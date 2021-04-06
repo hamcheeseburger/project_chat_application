@@ -10,7 +10,8 @@ import Messages from "../Messages/Messages";
 import InfoBar from "../InfoBar/InfoBar";
 import UserInfoBar from "../UserInfoBar/UserInfoBar";
 import Input from "../Input/Input";
-import ChatRoom from "../ChatRoom/ChatRoom";
+import ChatRooms from "../ChatRoom/ChatRooms";
+import CHatRoom from "../ChatRoom/ChatRoom";
 import Modal from "../Modal/Modal";
 import ModalParticipate from "../ModalParticipate/ModalParticipate";
 
@@ -82,9 +83,9 @@ const Chat = ({ location, history }) => {
         console.log(userId);
         // return;
         getRoomsOfUser(message);
-        console.log('rooms are changed!');
-        setRooms(rooms);
-        console.log(rooms);
+        // console.log('rooms are changed!');
+        // setRooms(rooms);
+        // console.log(rooms);
 
       } else {
         history.push("/");
@@ -108,24 +109,12 @@ const Chat = ({ location, history }) => {
     fetchRooms();
   }, []);
 
-  // useEffect(() => {
-  //   console.log("room changed");
-  //   socket.emit("roomJoin", { name, room }, (error) => {
-  //     if (error) {
-  //       alert(error);
-  //     }
-  //   });
-  // }, [room]);
-
   // 버튼 클릭 후 룸 목록을 띄운다.
   const _onButtonClick = () => {
     setIsClicked(true);
     console.log("clicked! Rooms length : " + rooms.length);
   };
 
-  // function setUpdate() {
-
-  // }
   // 해당 유저의 룸 목록을 가져옴
   const getRoomsOfUser = (message) => {
     console.log("Get rooms");
@@ -138,9 +127,15 @@ const Chat = ({ location, history }) => {
       .then(function (response) {
         // console.log('return!');
         // console.log(response.data.rows[0]);
-        Object.keys(response.data.rows).forEach((key) =>
-          rooms.push({ name: response.data.rows[key].name })
-        );
+
+        // Object.keys(response.data.rows).forEach((key) =>
+        //   rooms.push({ name: response.data.rows[key].name })
+        // );
+        var results = response.data.rows;
+        console.log(results);
+        setRooms(response.data.rows);
+
+
         // console.log(rooms[0].name);
 
         // return;
@@ -247,31 +242,25 @@ const Chat = ({ location, history }) => {
 
   const requestChats = (roomName) => {
     console.log("requestChats");
-    return new Promise((resolve, reject) => {
-      axios
-        .post("http://localhost:5000/getChatsInRoom", {
-          roomName: roomName,
-          name: name,
-          socketId: socket.id
-        })
-        .then(function (response) {
-          var items = response.data.rows;
-          if (items != null) {
-            items.forEach(function (item) {
-              console.log(item);
-              setMessages((messages) => [...messages, item]);
+    // return new Promise((resolve, reject) => {
+    axios
+      .post("http://localhost:5000/getChatsInRoom", {
+        roomName: roomName,
+        name: name,
+        socketId: socket.id
+      })
+      .then(function (response) {
+        var items = response.data.rows;
+        if (items != null) {
+          setMessages(items);
+        }
 
-            });
-          }
-          // setMessages((messages) => [...messages, message]);
-          // console.log();
-          // setMessages(response.data.rows);
-        })
-        .catch(function (error) {
-          alert("에러 발생");
-          console.log(error);
-        });
-    });
+      })
+      .catch(function (error) {
+        alert("에러 발생");
+        console.log(error);
+      });
+    // });
   };
 
   // room 참가
@@ -332,16 +321,15 @@ const Chat = ({ location, history }) => {
           </button>
         </div>
         <div className="chatrooms">
-          <button onClick={_onButtonClick}>룸 목록</button>
+          {/* <button onClick={_onButtonClick}>룸 목록</button> */}
 
-          {isClicked ?
+          {/* {isClicked ?
             rooms.map(item =>
               <li key={item.name} onClick={() => getChatsInRoom(item.name)}><ChatRoom room={item.name} /></li>)
             : null
-          }
+          } */}
 
-          {/* <p>{rooms.length}</p> */}
-          {/* <ChatRoom room={room} /> */}
+          <ChatRooms rooms={rooms} setRoom={setRoom} setMessages={setMessages} />
         </div>
       </div>
       <div className="container">
