@@ -64,6 +64,7 @@ const Chat = ({ location, history, props }) => {
 
   }, [ENDPOINT, location.search]);
 
+
   useEffect(() => {
 
     if (name != "" && password != "") {
