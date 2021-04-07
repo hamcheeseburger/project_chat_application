@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-<<<<<<< HEAD
-import { For } from 'react-loops';
-=======
 import { For } from "react-loops";
->>>>>>> refs/remotes/origin/master
 import queryString from "query-string";
 import io from "socket.io-client";
 
@@ -25,7 +21,7 @@ import plusIcon from "../../icons/plus.png";
 import "./Chat.css";
 
 // const ENDPOINT = 'https://project-chat-application.herokuapp.com/';
-const ENDPOINT = "http://localhost:3000/";
+const ENDPOINT = "http://localhost:5000/";
 
 let socket;
 
@@ -46,10 +42,7 @@ const Chat = ({ location, history }) => {
   const [participateRoomOpen, setParticipateRoomOpen] = useState(false);
   const [participateRoomName, setParticipateRoomName] = useState("");
   const [participateRoomPass, setParticipateRoomPass] = useState("");
-<<<<<<< HEAD
-=======
   const [roomId, setRoomId] = useState(0);
->>>>>>> refs/remotes/origin/master
   const [userId, setUserId] = useState(0);
   const [show, setShow] = useState(false);
   const [roomClicked, setRoomClicked] = useState(false);
@@ -69,7 +62,6 @@ const Chat = ({ location, history }) => {
         alert(error);
       }
     });
-
   }, [ENDPOINT, location.search]);
 
   useEffect(() => {
@@ -94,21 +86,13 @@ const Chat = ({ location, history }) => {
         // console.log('rooms are changed!');
         // setRooms(rooms);
         // console.log(rooms);
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/master
       } else {
         history.push("/");
       }
     });
 
     const fetchRooms = async () => {
-<<<<<<< HEAD
-      console.log('fetchRooms!');
-=======
       console.log("fetchRooms!");
->>>>>>> refs/remotes/origin/master
       setIsError(false);
       setIsLoading(true);
       try {
@@ -120,11 +104,7 @@ const Chat = ({ location, history }) => {
         setIsError(true);
       }
       setIsLoading(false);
-<<<<<<< HEAD
-    }
-=======
     };
->>>>>>> refs/remotes/origin/master
     fetchRooms();
   }, []);
 
@@ -140,11 +120,7 @@ const Chat = ({ location, history }) => {
     // axios post
     // @문제 : setUserId()가 안먹힌다.
     axios
-<<<<<<< HEAD
-      .post("http://localhost:3000/getRooms", {
-=======
       .post("http://localhost:5000/getRooms", {
->>>>>>> refs/remotes/origin/master
         userId: message,
       })
       .then(function (response) {
@@ -158,10 +134,6 @@ const Chat = ({ location, history }) => {
         console.log(results);
         setRooms(response.data.rows);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/master
         // console.log(rooms[0].name);
 
         // return;
@@ -201,8 +173,6 @@ const Chat = ({ location, history }) => {
     event.preventDefault();
 
     if (message) {
-<<<<<<< HEAD
-=======
       axios
         .post("http://localhost:5000/chatAdd", {
           roomId: roomId,
@@ -224,7 +194,6 @@ const Chat = ({ location, history }) => {
           console.log(error);
         });
 
->>>>>>> refs/remotes/origin/master
       socket.emit("sendMessage", { message, name, room }, () => setMessage(""));
     }
   };
@@ -254,11 +223,7 @@ const Chat = ({ location, history }) => {
 
     // axios post
     axios
-<<<<<<< HEAD
-      .post("http://localhost:3000/roomAdd", {
-=======
       .post("http://localhost:5000/roomAdd", {
->>>>>>> refs/remotes/origin/master
         plusRoomName: plusRoomName,
         plusRoomPassword: plusRoomPass,
         userId: userId,
@@ -279,38 +244,6 @@ const Chat = ({ location, history }) => {
         console.log(error);
       });
   };
-<<<<<<< HEAD
-
-  const getChatsInRoom = (roomName) => {
-    console.log(roomName);
-    setRoom(roomName);
-    setMessages([]);
-
-    requestChats(roomName);
-
-    // socket.emit("roomJoin", { name, roomName }, (error) => {
-    //   if (error) {
-    //     alert(error);
-    //   }
-    // });
-  };
-
-  const requestChats = (roomName) => {
-    console.log("requestChats");
-    // return new Promise((resolve, reject) => {
-    axios
-      .post("http://localhost:3000/getChatsInRoom", {
-        roomName: roomName,
-        name: name,
-        socketId: socket.id
-      })
-      .then(function (response) {
-        var items = response.data.rows;
-        if (items != null) {
-          setMessages(items);
-        }
-=======
->>>>>>> refs/remotes/origin/master
 
   const getChatsInRoom = (roomName) => {
     console.log(roomName);
@@ -390,51 +323,6 @@ const Chat = ({ location, history }) => {
         alert("에러 발생");
         console.log(error);
       });
-    // });
-  };
-
-  // room 참가
-  const openParticipateRoom = () => {
-    console.log("Participate room");
-
-    setParticipateRoomOpen(true);
-  };
-
-  const closeParticipateRoom = () => {
-    setParticipateRoomOpen(false);
-  };
-
-  const participateRoom = () => {
-    console.log("Participate");
-    if (participateRoomName == "" || participateRoomPass == "") {
-      alert("Please fill all of the options.");
-      return;
-    }
-
-    // axios post
-    axios
-      .post("http://localhost:3000/roomParticipate", {
-        participateRoomName: participateRoomName,
-        participateRoomPass: participateRoomPass,
-        userId: userId,
-      })
-      .then(function (response) {
-        console.log(response);
-        console.log(response.data.response);
-
-        if (response.data.response == "true") {
-          alert("The Room Participated.");
-          closeParticipateRoom();
-          // } else if (response.data.response == "false") {
-          //   alert("Participation Fail.");
-        } else {
-          alert("Fail.");
-        }
-      })
-      .catch(function (error) {
-        alert("에러 발생");
-        console.log(error);
-      });
   };
 
   return (
@@ -459,15 +347,11 @@ const Chat = ({ location, history }) => {
             : null
           } */}
 
-<<<<<<< HEAD
-          <ChatRooms rooms={rooms} setRoom={setRoom} setMessages={setMessages} />
-=======
           <ChatRooms
             rooms={rooms}
             setRoom={setRoom}
             setMessages={setMessages}
           />
->>>>>>> refs/remotes/origin/master
         </div>
       </div>
       <div className="container">
