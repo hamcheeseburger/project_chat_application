@@ -11,7 +11,7 @@ import InfoBar from "../InfoBar/InfoBar";
 import UserInfoBar from "../UserInfoBar/UserInfoBar";
 import Input from "../Input/Input";
 import ChatRooms from "../ChatRoom/ChatRooms";
-import CHatRoom from "../ChatRoom/ChatRoom";
+import ChatRoom from "../ChatRoom/ChatRoom";
 import Modal from "../Modal/Modal";
 import ModalParticipate from "../ModalParticipate/ModalParticipate";
 

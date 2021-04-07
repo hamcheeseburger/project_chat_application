@@ -20,6 +20,9 @@ export default function SignIn() {
         <Link onClick={e => (!name || !room) ? e.preventDefault() : null} to={`/chat?name=${name}&room=${room}`}>
           <button className={'button mt-20'} type="submit">Sign In</button>
         </Link>
+        {/* <Link onClick={e => (!name || !room) ? e.preventDefault() : null} to={`/chat`} method="POST">
+          <button className={'button mt-20'} type="submit">Sign In</button>
+        </Link> */}
         {/* <Link to={`/signUp`}>
           <button className={'button mt-20'} type="submit">Sign Up</button>
         </Link> */}
