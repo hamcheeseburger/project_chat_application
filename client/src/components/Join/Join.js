@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
-
 import './Join.css';
 
 export default function SignIn() {
@@ -17,12 +16,20 @@ export default function SignIn() {
         <div>
           <input placeholder="Password" className="joinInput mt-20" type="password" onChange={(event) => setRoom(event.target.value)} />
         </div>
-        <Link onClick={e => (!name || !room) ? e.preventDefault() : null} to={`/chat?name=${name}&room=${room}`}>
-          <button className={'button mt-20'} type="submit">Sign In</button>
-        </Link>
-        {/* <Link onClick={e => (!name || !room) ? e.preventDefault() : null} to={`/chat`} method="POST">
+        {/* <Link onClick={e => (!name || !room) ? e.preventDefault() : null} to={`/chat?name=${name}&room=${room}`}>
           <button className={'button mt-20'} type="submit">Sign In</button>
         </Link> */}
+        <Link onClick={e => (!name || !room) ? e.preventDefault() : null}
+          to={
+            {
+              pathname: '/chat',
+              state: {
+                name: `${name}`,
+                password: `${room}`
+              }
+            }}>
+          <button className={'button mt-20'} type="submit">Sign In</button>
+        </Link>
         {/* <Link to={`/signUp`}>
           <button className={'button mt-20'} type="submit">Sign Up</button>
         </Link> */}

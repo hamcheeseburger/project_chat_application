@@ -14,7 +14,7 @@ import ChatRooms from "../ChatRoom/ChatRooms";
 import ChatRoom from "../ChatRoom/ChatRoom";
 import Modal from "../Modal/Modal";
 import ModalParticipate from "../ModalParticipate/ModalParticipate";
-
+import { useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
 
 import plusIcon from "../../icons/plus.png";
@@ -25,9 +25,10 @@ const ENDPOINT = "http://localhost:5000/";
 
 let socket;
 
-const Chat = ({ location, history }) => {
+const Chat = ({ location, history, props }) => {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
+  const [password, setPassword] = useState("");
   const [rooms, setRooms] = useState([]);
   const [isClicked, setIsClicked] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -46,23 +47,33 @@ const Chat = ({ location, history }) => {
   const [userId, setUserId] = useState(0);
   const [show, setShow] = useState(false);
   const [roomClicked, setRoomClicked] = useState(false);
-  var roomVar;
 
+  const { state } = useLocation();
   useEffect(() => {
-    const { name, room } = queryString.parse(location.search);
+    // const { name, password } = queryString.parse(location.search);
 
     socket = io(ENDPOINT);
 
-    // setRoom(room);
-    // setRoom("임시 방이름");
-    setName(name);
+    console.log(state.name);
+    console.log(state.password);
+    // // setRoom(room);
+    // // setRoom("임시 방이름");
+    setName(state.name);
+    setPassword(state.password);
 
-    socket.emit("join", { name, room }, (error) => {
-      if (error) {
-        alert(error);
-      }
-    });
+
   }, [ENDPOINT, location.search]);
+
+  useEffect(() => {
+
+    if (name != "" && password != "") {
+      socket.emit("join", { name, password }, (error) => {
+        if (error) {
+          alert(error);
+        }
+      });
+    }
+  }, [name, password]);
 
   useEffect(() => {
     // admin의 메세지를 받아서 뿌리기
@@ -245,41 +256,41 @@ const Chat = ({ location, history }) => {
       });
   };
 
-  const getChatsInRoom = (roomName) => {
-    console.log(roomName);
-    setRoom(roomName);
-    setMessages([]);
+  // const getChatsInRoom = (roomName) => {
+  //   console.log(roomName);
+  //   setRoom(roomName);
+  //   setMessages([]);
 
-    requestChats(roomName);
+  //   requestChats(roomName);
 
-    // socket.emit("roomJoin", { name, roomName }, (error) => {
-    //   if (error) {
-    //     alert(error);
-    //   }
-    // });
-  };
+  //   // socket.emit("roomJoin", { name, roomName }, (error) => {
+  //   //   if (error) {
+  //   //     alert(error);
+  //   //   }
+  //   // });
+  // };
 
-  const requestChats = (roomName) => {
-    console.log("requestChats");
-    // return new Promise((resolve, reject) => {
-    axios
-      .post("http://localhost:5000/getChatsInRoom", {
-        roomName: roomName,
-        name: name,
-        socketId: socket.id,
-      })
-      .then(function (response) {
-        var items = response.data.rows;
-        if (items != null) {
-          setMessages(items);
-        }
-      })
-      .catch(function (error) {
-        alert("에러 발생");
-        console.log(error);
-      });
-    // });
-  };
+  // const requestChats = (roomName) => {
+  //   console.log("requestChats");
+  //   // return new Promise((resolve, reject) => {
+  //   axios
+  //     .post("http://localhost:5000/getChatsInRoom", {
+  //       roomName: roomName,
+  //       name: name,
+  //       socketId: socket.id,
+  //     })
+  //     .then(function (response) {
+  //       var items = response.data.rows;
+  //       if (items != null) {
+  //         setMessages(items);
+  //       }
+  //     })
+  //     .catch(function (error) {
+  //       alert("에러 발생");
+  //       console.log(error);
+  //     });
+  //   // });
+  // };
 
   // room 참가
   const openParticipateRoom = () => {

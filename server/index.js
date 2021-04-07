@@ -37,7 +37,7 @@ function getIo() {
 
 
 io.on("connect", (socket) => {
-  socket.on("join", ({ name, room }, callback) => {
+  socket.on("join", ({ name, password }, callback) => {
     // const { error, user } = addUser({ id: socket.id, name, room });
     // console.log("user.room : " + user.room);
 
@@ -75,7 +75,7 @@ io.on("connect", (socket) => {
       //id 와 pw 가 같은것을 조회한다
       var exec = poolConn.query(
         "select ?? from ?? where login_id = ? and password=?",
-        [columns, tablename, name, room],
+        [columns, tablename, name, password],
 
         function (err, rows) {
           poolConn.release(); //pool 반환처리
@@ -105,7 +105,7 @@ io.on("connect", (socket) => {
     });
 
     console.log(name);
-    console.log(room);
+    console.log(password);
 
     // front 에서 callback 함수를 보내줌
     callback();
