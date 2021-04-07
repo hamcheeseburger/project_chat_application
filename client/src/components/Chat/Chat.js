@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { For } from 'react-loops';
+import { For } from "react-loops";
 import queryString from "query-string";
 import io from "socket.io-client";
 
@@ -42,6 +42,7 @@ const Chat = ({ location, history }) => {
   const [participateRoomOpen, setParticipateRoomOpen] = useState(false);
   const [participateRoomName, setParticipateRoomName] = useState("");
   const [participateRoomPass, setParticipateRoomPass] = useState("");
+  const [roomId, setRoomId] = useState(0);
   const [userId, setUserId] = useState(0);
   const [show, setShow] = useState(false);
   const [roomClicked, setRoomClicked] = useState(false);
@@ -61,7 +62,6 @@ const Chat = ({ location, history }) => {
         alert(error);
       }
     });
-
   }, [ENDPOINT, location.search]);
 
   useEffect(() => {
@@ -86,14 +86,13 @@ const Chat = ({ location, history }) => {
         // console.log('rooms are changed!');
         // setRooms(rooms);
         // console.log(rooms);
-
       } else {
         history.push("/");
       }
     });
 
     const fetchRooms = async () => {
-      console.log('fetchRooms!');
+      console.log("fetchRooms!");
       setIsError(false);
       setIsLoading(true);
       try {
@@ -105,7 +104,7 @@ const Chat = ({ location, history }) => {
         setIsError(true);
       }
       setIsLoading(false);
-    }
+    };
     fetchRooms();
   }, []);
 
@@ -134,7 +133,6 @@ const Chat = ({ location, history }) => {
         var results = response.data.rows;
         console.log(results);
         setRooms(response.data.rows);
-
 
         // console.log(rooms[0].name);
 
@@ -175,6 +173,27 @@ const Chat = ({ location, history }) => {
     event.preventDefault();
 
     if (message) {
+      axios
+        .post("http://localhost:5000/chatAdd", {
+          roomId: roomId,
+          userId: userId,
+          message: message,
+        })
+        .then(function (response) {
+          console.log(response);
+          console.log(response.data.response);
+
+          if (response.data.response == "true") {
+            alert("Success");
+          } else {
+            alert("Fail");
+          }
+        })
+        .catch(function (error) {
+          alert("에러 발생");
+          console.log(error);
+        });
+
       socket.emit("sendMessage", { message, name, room }, () => setMessage(""));
     }
   };
@@ -247,14 +266,13 @@ const Chat = ({ location, history }) => {
       .post("http://localhost:5000/getChatsInRoom", {
         roomName: roomName,
         name: name,
-        socketId: socket.id
+        socketId: socket.id,
       })
       .then(function (response) {
         var items = response.data.rows;
         if (items != null) {
           setMessages(items);
         }
-
       })
       .catch(function (error) {
         alert("에러 발생");
@@ -329,7 +347,11 @@ const Chat = ({ location, history }) => {
             : null
           } */}
 
-          <ChatRooms rooms={rooms} setRoom={setRoom} setMessages={setMessages} />
+          <ChatRooms
+            rooms={rooms}
+            setRoom={setRoom}
+            setMessages={setMessages}
+          />
         </div>
       </div>
       <div className="container">

@@ -88,13 +88,13 @@ router.post("/getChatsInRoom", express.json(), function (req, res, next) {
           console.log("Chat 찾음");
 
           // parse to json array
-          var resultArray = Object.values(JSON.parse(JSON.stringify(rows)))
+          var resultArray = Object.values(JSON.parse(JSON.stringify(rows)));
           var result = [];
           resultArray.forEach(function (item) {
             var json = {
               user: item.login_id,
-              text: item.chat
-            }
+              text: item.chat,
+            };
             result.push(json);
           });
 
@@ -107,7 +107,6 @@ router.post("/getChatsInRoom", express.json(), function (req, res, next) {
       }
     );
   });
-
 });
 
 router.post("/getRooms", express.json(), function (req, res, next) {
@@ -336,6 +335,68 @@ router.post("/roomParticipate", express.json(), function (req, res) {
               res.send({ response: "true" }).status(200);
             }
           );
+        }
+      );
+
+      // connection release
+      poolConn.release();
+    });
+  });
+});
+
+router.post("/chatAdd", express.json(), function (req, res) {
+  var roomId = req.body.roomId;
+  var userId = req.body.userId;
+  var message = req.body.message;
+  var now = new Date().toFormat("YYYY-MM-DD HH24:MI:SS");
+
+  db.getPool().getConnection(function (err, poolConn) {
+    if (err) {
+      if (poolConn) {
+        // error 시 connection release
+        poolConn.release();
+      }
+
+      return;
+    }
+    console.log("데이터베이스 연결 스레드 아이디" + poolConn.threadId);
+
+    // Transaction (query를 중첩구조로 실행함)
+    poolConn.beginTransaction(function (err) {
+      // Room 일치 여부 확인
+      var participant_data_set = {
+        room_id: roomId,
+        user_id: userId,
+        chat: message,
+        created_date: now,
+      };
+      var exec = poolConn.query(
+        "insert into CHAT_TABLE set ?",
+        participant_data_set,
+        function (err, result) {
+          console.log("실행된 SQL : " + exec.sql);
+
+          if (err) {
+            console.log("sql 실행 시 에러 발생");
+
+            res.send({ response: "false" }).status(200);
+            // 실패시 rollback
+            return poolConn.rollback(function () {
+              throw err;
+            });
+          }
+
+          // 성공 시 commit
+          poolConn.commit(function (err) {
+            if (err) {
+              return poolConn.rollback(function () {
+                throw err;
+              });
+            }
+          });
+
+          // 성공메세지 response
+          res.send({ response: "true" }).status(200);
         }
       );
 
