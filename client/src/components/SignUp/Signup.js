@@ -47,10 +47,10 @@ export default function SignUp({ history }) {
             <div className="joinInnerContainer">
                 <h1 className="heading">Sign Up</h1>
                 <div>
-                    <input placeholder="id" className="joinInput" type="text" onChange={(event) => setSignId(event.target.value)} />
+                    <input placeholder="id" className="joinInput" type="text" onChange={(event) => setSignId(event.target.value)}/>
                 </div>
                 <div>
-                    <input placeholder="password" className="joinInput mt-20" type="password" onChange={(event) => setSignPassword(event.target.value)} />
+                    <input placeholder="password" className="joinInput mt-20" type="password" onChange={(event) => setSignPassword(event.target.value)}/>
                 </div>
                 <div>
                     <input placeholder="password check" className="joinInput mt-20" type="password" onChange={(event) => setSignPasswordCheck(event.target.value)} />

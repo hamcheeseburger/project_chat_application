@@ -17,17 +17,18 @@ export default function SignIn() {
         <div>
           <input placeholder="Password" className="joinInput mt-20" type="password" onChange={(event) => setRoom(event.target.value)} />
         </div>
-        <Link onClick={e => (!name || !room) ? e.preventDefault() : null} to={`/chat?name=${name}&room=${room}`}>
+        <Link onClick={e => (!name || !room) ? e.preventDefault() : null} to="/chat" method="post">
           <button className={'button mt-20'} type="submit">Sign In</button>
         </Link>
         {/* <Link to={`/signUp`}>
           <button className={'button mt-20'} type="submit">Sign Up</button>
         </Link> */}
-
-        <Link to={`/signUp`}>
+        <Link to={'/signUp'}>
           <p>SIGN UP</p>
         </Link>
       </div>
     </div>
   );
 }
+
+//get -> post : Link 사용해서 변경하기
