@@ -175,7 +175,7 @@ const Chat = ({ location, history }) => {
     if (message) {
       axios
         .post("http://localhost:5000/chatAdd", {
-          roomId: roomId,
+          room: room,
           userId: userId,
           message: message,
         })
