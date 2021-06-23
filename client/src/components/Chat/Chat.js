@@ -97,7 +97,7 @@ const Chat = ({ location, history, props }) => {
   }, [name, password]);
 
   useEffect(() => {
-    // admin의 메세지를 받아서 뿌리기
+    // 메세지 뿌리기
     socket.on("message", (message) => {
       console.log("message : " + message);
       setMessages((messages) => [...messages, message]);
@@ -108,28 +108,28 @@ const Chat = ({ location, history, props }) => {
       setUsers(users);
     });
 
-    const fetchRooms = async () => {
-      console.log("fetchRooms!");
-      setIsError(false);
-      setIsLoading(true);
-      try {
-        const roomsData = rooms;
+    // const fetchRooms = async () => {
+    //   console.log("fetchRooms!");
+    //   setIsError(false);
+    //   setIsLoading(true);
+    //   try {
+    //     const roomsData = rooms;
 
-        setRooms(roomsData);
-        console.log(rooms);
-      } catch (error) {
-        setIsError(true);
-      }
-      setIsLoading(false);
-    };
-    fetchRooms();
+    //     setRooms(roomsData);
+    //     console.log(rooms);
+    //   } catch (error) {
+    //     setIsError(true);
+    //   }
+    //   setIsLoading(false);
+    // };
+    // fetchRooms();
   }, []);
 
-  // 버튼 클릭 후 룸 목록을 띄운다.
-  const _onButtonClick = () => {
-    setIsClicked(true);
-    console.log("clicked! Rooms length : " + rooms.length);
-  };
+  // // 버튼 클릭 후 룸 목록을 띄운다.
+  // const _onButtonClick = () => {
+  //   setIsClicked(true);
+  //   console.log("clicked! Rooms length : " + rooms.length);
+  // };
 
   // 해당 유저의 룸 목록을 가져옴
   const getRoomsOfUser = (message) => {
@@ -219,6 +219,7 @@ const Chat = ({ location, history, props }) => {
         if (response.data.response == "true") {
           alert("The Room Added");
           closePlusRoom();
+          getRoomsOfUser(userId);
         } else {
           alert("The room is already exist.");
         }
@@ -228,43 +229,6 @@ const Chat = ({ location, history, props }) => {
         console.log(error);
       });
   };
-
-  // const getChatsInRoom = (roomName) => {
-  //   console.log(roomName);
-  //   setRoom(roomName);
-  //   setMessages([]);
-
-  //   requestChats(roomName);
-
-  //   // socket.emit("roomJoin", { name, roomName }, (error) => {
-  //   //   if (error) {
-  //   //     alert(error);
-  //   //   }
-  //   // });
-  // };
-
-  // const requestChats = (roomName) => {
-  //   console.log("requestChats");
-  //   // return new Promise((resolve, reject) => {
-  //   axios
-  //     .post("http://localhost:5000/getChatsInRoom", {
-  //       roomName: roomName,
-  //       name: name,
-  //       socketId: socket.id,
-  //     })
-  //     .then(function (response) {
-  //       var items = response.data.rows;
-  //       if (items != null) {
-  //         setMessages(items);
-  //       }
-  //     })
-  //     .catch(function (error) {
-  //       alert("에러 발생");
-  //       console.log(error);
-  //     });
-  //   // });
-  // };
-
   // room 참가
   const openParticipateRoom = () => {
     console.log("Participate room");
@@ -297,6 +261,7 @@ const Chat = ({ location, history, props }) => {
         if (response.data.response == "true") {
           alert("The Room Participated.");
           closeParticipateRoom();
+          getRoomsOfUser(userId);
           // } else if (response.data.response == "false") {
           //   alert("Participation Fail.");
         } else {

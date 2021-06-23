@@ -16,35 +16,7 @@ app.use(router);
 var dbClass = require("./DbClass");
 db = new dbClass();
 
-// var mySql = require('mysql');
-
-// //connection 은 한정되어 있어서 풀을 만들어 그 안에서 사용한다
-// //connection 할때도 비용이 들어감, 만들고 닫고
-
-// var pool = mySql.createPool({
-//   connectionLimit: 10,            //접속을 10개 만들고 10개를 재사용
-//   host: 'chat-db.czkuabyjl3ag.ap-northeast-2.rds.amazonaws.com',
-//   user: 'admin',
-//   password: '12345678',   //MySql 설치할때의 비번을 입력하면 됨!!
-//   database: 'chat_db',
-//   debug: false
-// });
-
-
-function getIo() {
-  return io;
-}
-
-
 io.on("connect", (socket) => {
-  socket.on("join", ({ name, room }, callback) => {
-    console.log("name : " + name);
-    console.log("roomname : " + room);
-    console.log("socket.id : " + socket.id);
-    const { error, user } = addUser({ id: socket.id, name, room });
-    if (error) return callback("error");
-  });
-
   socket.on("roomJoin", ({ name, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, name, room });
 
@@ -99,12 +71,6 @@ io.on("connect", (socket) => {
     }
   });
 });
-
-
-
-module.exports = {
-  getIo: getIo
-};
 
 server.listen(process.env.PORT || 5000, () =>
   console.log(`Server has started.`)
