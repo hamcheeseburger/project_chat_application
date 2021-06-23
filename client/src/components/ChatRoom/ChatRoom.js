@@ -9,15 +9,8 @@ import io from "socket.io-client";
 
 let socket;
 const ENDPOINT = "http://localhost:5000/";
-const ChatRoom = ({ room, name, socket, setRoom, setMessages }) => {
+const ChatRoom = ({ room, name, socket, setRoom, setMessages, getRoomsOfUser }) => {
 
-  useEffect(() => {
-    // const { name, password } = queryString.parse(location.search);
-    console.log("ChatRoom useEffect");
-    // socket = io.connect(ENDPOINT);
-
-
-  }, []);
 
   const roomClicked = () => {
     setRoom(room);

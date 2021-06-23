@@ -145,7 +145,8 @@ const Chat = ({ location, history, props }) => {
         var results = response.data.rows;
         console.log(results);
         setRooms(response.data.rows);
-
+        setRoom("");
+        setMessages([]);
       })
       .catch(function (error) {
         alert("에러 발생");
@@ -302,11 +303,17 @@ const Chat = ({ location, history, props }) => {
             socket={socket}
             setRoom={setRoom}
             setMessages={setMessages}
+            getRoomsOfUser={getRoomsOfUser}
           />
         </div>
       </div>
       <div className="container">
-        <InfoBar room={room} />
+        <InfoBar
+          room={room}
+          userId={userId}
+          socket={socket} name={name}
+          getRoomsOfUser={getRoomsOfUser} />
+
         <Messages messages={messages} name={name} />
         <Input
           message={message}
