@@ -1,21 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 
 import onlineIcon from "../../icons/onlineIcon.png";
 import closeIcon from "../../icons/closeIcon.png";
 
 import "./ChatRoom.css";
-import { Socket } from "socket.io-client";
+import io from "socket.io-client";
 
-const ChatRoom = ({ room, userId, socket, setRoom, setMessages }) => {
+let socket;
+const ENDPOINT = "http://localhost:5000/";
+const ChatRoom = ({ room, name, socket, setRoom, setMessages }) => {
+
+  useEffect(() => {
+    // const { name, password } = queryString.parse(location.search);
+    console.log("ChatRoom useEffect");
+    // socket = io.connect(ENDPOINT);
+
+
+  }, []);
+
   const roomClicked = () => {
     setRoom(room);
     setMessages([]);
 
     requestChats(room);
-    // socket.emit("join", { userId, room }, (errormessage) => {
-    //   console.log(errormessage);
-    // });
+    console.log("roomclicked : " + room);
+    socket.emit("roomJoin", { name, room }, (errormessage) => {
+      console.log(errormessage);
+    });
   };
 
   const requestChats = (roomName) => {

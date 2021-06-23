@@ -52,10 +52,10 @@ const Chat = ({ location, history, props }) => {
   useEffect(() => {
     // const { name, password } = queryString.parse(location.search);
 
-    socket = io(ENDPOINT);
+    socket = io.connect(ENDPOINT);
     console.log(state.name);
     console.log(state.password);
-    console.log("socket id : " + socket);
+
     // setRoom(room);
     // setRoom("임시 방이름");
     setName(state.name);
@@ -99,7 +99,7 @@ const Chat = ({ location, history, props }) => {
   useEffect(() => {
     // admin의 메세지를 받아서 뿌리기
     socket.on("message", (message) => {
-      console.log(message);
+      console.log("message : " + message);
       setMessages((messages) => [...messages, message]);
     });
 
@@ -141,44 +141,11 @@ const Chat = ({ location, history, props }) => {
         userId: message,
       })
       .then(function (response) {
-        // console.log('return!');
-        // console.log(response.data.rows[0]);
 
-        // Object.keys(response.data.rows).forEach((key) =>
-        //   rooms.push({ name: response.data.rows[key].name })
-        // );
         var results = response.data.rows;
         console.log(results);
         setRooms(response.data.rows);
 
-        // console.log(rooms[0].name);
-
-        // return;
-
-        // if (err) {
-        //   console.log('Error!!!');
-        //   // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-        //   // res.write('<h1>에러발생</h1>');
-        //   // res.end();
-        //   return;
-        // }
-
-        // if (rows) {
-        //   console.dir(rows);
-        //   // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-        //   // res.write('<h1>Login Success</h1>');
-        //   // res.write('<h1> user </h1>' + rows[0].name);
-        //   // res.write('<br><a href="/login2.html"> re login </a>');
-        //   // res.end();
-
-        // }
-        // else {
-        //   console.log('empty Error!!!');
-        //   // res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-        //   // res.write('<h1>user data not exist</h1>');
-        //   // res.write('<a href="/login2.html"> re login</a>');
-        //   // res.end();
-        // }
       })
       .catch(function (error) {
         alert("에러 발생");
@@ -188,6 +155,7 @@ const Chat = ({ location, history, props }) => {
 
   const sendMessage = (event) => {
     event.preventDefault();
+    socket.emit("sendMessage", { message, name, room }, () => setMessage(""));
 
     if (message) {
       axios
@@ -201,7 +169,7 @@ const Chat = ({ location, history, props }) => {
           console.log(response.data.response);
 
           if (response.data.response == "true") {
-            alert("Success");
+            //alert("Success");
           } else {
             alert("Fail");
           }
@@ -210,9 +178,8 @@ const Chat = ({ location, history, props }) => {
           alert("에러 발생");
           console.log(error);
         });
-
-      socket.emit("sendMessage", { message, name, room }, () => setMessage(""));
     }
+
   };
 
   // room 추가
@@ -366,7 +333,7 @@ const Chat = ({ location, history, props }) => {
 
           <ChatRooms
             rooms={rooms}
-            userId={userId}
+            name={name}
             socket={socket}
             setRoom={setRoom}
             setMessages={setMessages}

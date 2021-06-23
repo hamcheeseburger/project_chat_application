@@ -37,23 +37,30 @@ function getIo() {
 
 
 io.on("connect", (socket) => {
-  socket.on("join", ({ userId, roomname }, callback) => {
-    const { error, user } = addUser({ id: socket.id, userId, room });
-    console.log(error);
+  socket.on("join", ({ name, room }, callback) => {
+    console.log("name : " + name);
+    console.log("roomname : " + room);
+    console.log("socket.id : " + socket.id);
+    const { error, user } = addUser({ id: socket.id, name, room });
     if (error) return callback("error");
   });
 
   socket.on("roomJoin", ({ name, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, name, room });
-    console.log("user.room : " + user.room);
 
-    if (error) return callback(error);
+    if (user === undefined) return;
+    console.log("user.name : " + user.name);
+    console.log("user.room : " + user.room);
+    console.log("socket.id : " + socket.id);
+    if (error) {
+      console.log(error);
+    };
 
     socket.join(user.room);
-    socket.emit("message", {
-      user: "admin",
-      text: `${user.name}, welcome to room ${user.room}.`,
-    });
+
+    //socket.emit("message", { user: "admin", text: `${user.name}, welcome to room ${user.room}.` });
+
+    console.log("checkpoint");
 
     socket.broadcast
       .to(user.room)
@@ -69,9 +76,10 @@ io.on("connect", (socket) => {
   socket.on("sendMessage", ({ message, name, room }, callback) => {
     const user = getUser(socket.id);
 
-    console.log("sendMessage : " + room);
-    // io.to(room).emit("message", { user: name, text: message });
-    socket.emit("message", { user: name, text: message });
+    console.log("room : " + room);
+    console.log("name : " + user.name);
+    io.to(room).emit("message", { user: name, text: message });
+    //socket.emit("message", { user: name, text: message });
 
     callback();
   });
