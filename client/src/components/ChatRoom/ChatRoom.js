@@ -7,12 +7,15 @@ import closeIcon from "../../icons/closeIcon.png";
 import "./ChatRoom.css";
 import { Socket } from "socket.io-client";
 
-const ChatRoom = ({ room, setRoom, setMessages }) => {
+const ChatRoom = ({ room, userId, socket, setRoom, setMessages }) => {
   const roomClicked = () => {
     setRoom(room);
     setMessages([]);
 
     requestChats(room);
+    // socket.emit("join", { userId, room }, (errormessage) => {
+    //   console.log(errormessage);
+    // });
   };
 
   const requestChats = (roomName) => {

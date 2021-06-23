@@ -8,6 +8,59 @@ db = new dbClass();
 // create application/json parser
 // var jsonParser = require('body-parser').json();
 
+router.post("/signIn", express.json(), function (req, res, next) {
+  var loginId = req.body.loginId;
+  var password = req.body.password;
+
+  db.getPool().getConnection(function (err, poolConn) {
+    if (err) {
+      if (poolConn) {
+        poolConn.release(); //pool 반환처리
+      }
+      console.log("connection error");
+      // callback();
+      return;
+    }
+
+    console.log("데이터베이스 연결 스레드 아이디" + poolConn.threadId);
+
+    var tablename = "USER_TABLE";
+    var columns = ["user_id", "name"];
+
+    //id 와 pw 가 같은것을 조회한다
+    var exec = poolConn.query(
+      "select ?? from ?? where login_id = ? and password=?",
+      [columns, tablename, loginId, password],
+
+      function (err, rows) {
+        poolConn.release(); //pool 반환처리
+        console.log("실행된 ssql : " + exec.sql);
+
+        if (err) {
+          // callback(err, null);
+          console.log("error");
+          console.log(err)
+          return;
+        }
+
+        if (rows.length > 0) {
+          console.log("사용자 찾음");
+          var string = JSON.stringify(rows);
+          var json = JSON.parse(string);
+          console.log(json[0].user_id)
+          res.json({ userId: json[0].user_id });
+          //socket.emit("login", json[0].user_id);
+        } else {
+          console.log("사용자 찾지 못함");
+          //socket.emit("login", -1);
+          // callback(null, null);
+          res.json({});
+        }
+      }
+    );
+  });
+});
+
 router.get("/", (req, res) => {
   res.send({ response: "Server is up and running." }).status(200);
 });

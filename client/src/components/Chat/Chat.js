@@ -53,54 +53,59 @@ const Chat = ({ location, history, props }) => {
     // const { name, password } = queryString.parse(location.search);
 
     socket = io(ENDPOINT);
-
     console.log(state.name);
     console.log(state.password);
-    // // setRoom(room);
-    // // setRoom("임시 방이름");
+    console.log("socket id : " + socket);
+    // setRoom(room);
+    // setRoom("임시 방이름");
     setName(state.name);
     setPassword(state.password);
-
 
   }, [ENDPOINT, location.search]);
 
 
   useEffect(() => {
-
     if (name != "" && password != "") {
-      socket.emit("join", { name, password }, (error) => {
-        if (error) {
-          alert(error);
-        }
-      });
+
+      console.log(name);
+      console.log(password);
+      // axios post
+      axios
+        .post("http://localhost:5000/signIn", {
+          loginId: name,
+          password: password
+        })
+        .then(function (response) {
+          console.log(response);
+          console.log(response.data.response);
+
+          if (response.data.userId !== undefined) {
+            console.log("userId" + response.data.userId);
+            setUserId(response.data.userId);
+
+            getRoomsOfUser(response.data.userId);
+          } else {
+            history.push("/");
+            alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
+          }
+        })
+        .catch(function (error) {
+          alert("에러 발생");
+          console.log(error);
+        });
     }
   }, [name, password]);
 
   useEffect(() => {
     // admin의 메세지를 받아서 뿌리기
     socket.on("message", (message) => {
+      console.log(message);
       setMessages((messages) => [...messages, message]);
     });
 
     // 참가자 갱신
     socket.on("roomData", ({ users }) => {
       setUsers(users);
-    });
-
-    socket.on("login", (message) => {
-      console.log(message);
-      if (message != -1) {
-        // 로그인 성공시, message로 userId 넘겨줌
-        setUserId(message);
-        console.log(userId);
-        // return;
-        getRoomsOfUser(message);
-        // console.log('rooms are changed!');
-        // setRooms(rooms);
-        // console.log(rooms);
-      } else {
-        history.push("/");
-      }
     });
 
     const fetchRooms = async () => {
@@ -361,6 +366,8 @@ const Chat = ({ location, history, props }) => {
 
           <ChatRooms
             rooms={rooms}
+            userId={userId}
+            socket={socket}
             setRoom={setRoom}
             setMessages={setMessages}
           />

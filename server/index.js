@@ -37,83 +37,15 @@ function getIo() {
 
 
 io.on("connect", (socket) => {
-  socket.on("join", ({ name, password }, callback) => {
-    // const { error, user } = addUser({ id: socket.id, name, room });
-    // console.log("user.room : " + user.room);
-
-    // if (error) return callback(error);
-
-    // socket.join(user.room);
-    // socket.emit("message", {
-    //   user: "admin",
-    //   text: `${user.name}, welcome to room ${user.room}.`,
-    // });
-    // socket.broadcast
-    //   .to(user.room)
-    //   .emit("message", { user: "admin", text: `${user.name} has joined!` });
-
-    // io.to(user.room).emit("roomData", {
-    //   room: user.room,
-    //   users: getUsersInRoom(user.room),
-    // });
-
-    db.getPool().getConnection(function (err, poolConn) {
-      if (err) {
-        if (poolConn) {
-          poolConn.release(); //pool 반환처리
-        }
-        console.log("connection error");
-        // callback();
-        return;
-      }
-
-      console.log("데이터베이스 연결 스레드 아이디" + poolConn.threadId);
-
-      var tablename = "USER_TABLE";
-      var columns = ["user_id", "name"];
-
-      //id 와 pw 가 같은것을 조회한다
-      var exec = poolConn.query(
-        "select ?? from ?? where login_id = ? and password=?",
-        [columns, tablename, name, password],
-
-        function (err, rows) {
-          poolConn.release(); //pool 반환처리
-          console.log("실행된 ssql : " + exec.sql);
-
-          if (err) {
-            // callback(err, null);
-            console.log("error");
-            console.log(err)
-            return;
-          }
-
-          if (rows.length > 0) {
-            console.log("사용자 찾음");
-            var string = JSON.stringify(rows);
-            var json = JSON.parse(string);
-            console.log(json[0].user_id)
-
-            socket.emit("login", json[0].user_id);
-          } else {
-            console.log("사용자 찾지 못함");
-            socket.emit("login", -1);
-            // callback(null, null);
-          }
-        }
-      );
-    });
-
-    console.log(name);
-    console.log(password);
-
-    // front 에서 callback 함수를 보내줌
-    callback();
+  socket.on("join", ({ userId, roomname }, callback) => {
+    const { error, user } = addUser({ id: socket.id, userId, room });
+    console.log(error);
+    if (error) return callback("error");
   });
 
   socket.on("roomJoin", ({ name, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, name, room });
-    // console.log("user.room : " + user.room);
+    console.log("user.room : " + user.room);
 
     if (error) return callback(error);
 
@@ -122,6 +54,7 @@ io.on("connect", (socket) => {
       user: "admin",
       text: `${user.name}, welcome to room ${user.room}.`,
     });
+
     socket.broadcast
       .to(user.room)
       .emit("message", { user: "admin", text: `${user.name} has joined!` });
@@ -136,7 +69,7 @@ io.on("connect", (socket) => {
   socket.on("sendMessage", ({ message, name, room }, callback) => {
     const user = getUser(socket.id);
 
-    console.log(room);
+    console.log("sendMessage : " + room);
     // io.to(room).emit("message", { user: name, text: message });
     socket.emit("message", { user: name, text: message });
 
