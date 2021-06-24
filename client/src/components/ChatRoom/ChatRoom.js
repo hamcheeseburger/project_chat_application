@@ -53,9 +53,9 @@ const ChatRoom = ({ room, name, socket, setRoom, setMessages, getRoomsOfUser }) 
         <h3>{room}</h3>
       </div>
       <div className="rightInnerContainer">
-        <a href="/">
-          <img src={closeIcon} alt="close icon" />
-        </a>
+        {/* <a href="/"> */}
+        <img src={closeIcon} alt="close icon" />
+        {/* </a> */}
       </div>
     </div>
   );

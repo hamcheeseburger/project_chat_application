@@ -97,39 +97,37 @@ const Chat = ({ location, history, props }) => {
   }, [name, password]);
 
   useEffect(() => {
+    socket.on("exit", (message) => {
+      console.log("exit");
+      setRoom("");
+      setMessages([]);
+    });
+
     // 메세지 뿌리기
     socket.on("message", (message) => {
       console.log("message : " + message);
       setMessages((messages) => [...messages, message]);
     });
 
+    socket.on("adminmessage", (message) => {
+      console.log("adminmessage : " + message);
+      console.log("adminmessage : " + message.room);
+      console.log("room : " + room);
+      if (room == message.room) {
+        setMessages((messages) => [...messages, message]);
+      }
+    });
+
     // 참가자 갱신
     socket.on("roomData", ({ users }) => {
       setUsers(users);
     });
-
-    // const fetchRooms = async () => {
-    //   console.log("fetchRooms!");
-    //   setIsError(false);
-    //   setIsLoading(true);
-    //   try {
-    //     const roomsData = rooms;
-
-    //     setRooms(roomsData);
-    //     console.log(rooms);
-    //   } catch (error) {
-    //     setIsError(true);
-    //   }
-    //   setIsLoading(false);
-    // };
-    // fetchRooms();
   }, []);
 
-  // // 버튼 클릭 후 룸 목록을 띄운다.
-  // const _onButtonClick = () => {
-  //   setIsClicked(true);
-  //   console.log("clicked! Rooms length : " + rooms.length);
-  // };
+  useEffect(() => {
+    console.log("useEffect room : " + room);
+    setRoom(room);
+  }, [room]);
 
   // 해당 유저의 룸 목록을 가져옴
   const getRoomsOfUser = (message) => {
@@ -145,8 +143,7 @@ const Chat = ({ location, history, props }) => {
         var results = response.data.rows;
         console.log(results);
         setRooms(response.data.rows);
-        setRoom("");
-        setMessages([]);
+
       })
       .catch(function (error) {
         alert("에러 발생");
@@ -260,14 +257,21 @@ const Chat = ({ location, history, props }) => {
         console.log(response.data.response);
 
         if (response.data.response == "true") {
-          alert("The Room Participated.");
-          closeParticipateRoom();
+          //alert("The Room Participated.");
+
           getRoomsOfUser(userId);
           // } else if (response.data.response == "false") {
           //   alert("Participation Fail.");
+        } else if (response.data.response == "duplicate") {
+          alert("Already participated.");
+
+        } else if (response.data.response == "not_exist") {
+          alert("Room name or password incorrect..");
+
         } else {
-          alert("Fail.");
+          alert("Fail");
         }
+        closeParticipateRoom();
       })
       .catch(function (error) {
         alert("에러 발생");

@@ -47,7 +47,9 @@ const InfoBar = (props) => {
       <h3>{props.room}</h3>
     </div>
     <div className="rightInnerContainer">
-      <img onClick={() => exitRoom()} src={closeIcon} alt="close icon" />
+      <a onClick={() => exitRoom()} href="#">
+        <img src={closeIcon} alt="close icon" />
+      </a>
     </div>
   </div>
   );

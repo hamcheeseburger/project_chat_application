@@ -3,7 +3,7 @@ const express = require("express");
 const socketio = require("socket.io");
 const cors = require("cors");
 
-const { addUser, removeUser, getUser, getUsersInRoom } = require("./users");
+const { addUser, removeUser, getUser, getUsersInRoom, removeUserByName } = require("./users");
 const router = require("./router");
 
 const app = express();
@@ -18,7 +18,7 @@ db = new dbClass();
 //,,,,,,
 
 
-
+// 소켓이 connect 되면 client의 소켓 객체를 callback으로 받는다
 io.on("connect", (socket) => {
   socket.on("roomJoin", ({ name, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, name, room });
@@ -31,16 +31,16 @@ io.on("connect", (socket) => {
       console.log(error);
     };
 
+    // 사용자 소켓이 join됨
     socket.join(user.room);
-
-    //socket.emit("message", { user: "admin", text: `${user.name}, welcome to room ${user.room}.` });
 
     console.log("checkpoint");
 
+    // 나를 제외한 모두에게 broadcast
     socket.broadcast
       .to(user.room)
       .emit("message", { user: "admin", text: `${user.name} has joined!` });
-
+    // 나를 포함한 모두에게 
     io.to(user.room).emit("roomData", {
       room: user.room,
       users: getUsersInRoom(user.room),
@@ -53,8 +53,8 @@ io.on("connect", (socket) => {
 
     console.log("room : " + room);
     console.log("name : " + user.name);
+    // 나를 포함한 모두에게 
     io.to(room).emit("message", { user: name, text: message });
-    //socket.emit("message", { user: name, text: message });
 
     callback();
   });
@@ -73,6 +73,29 @@ io.on("connect", (socket) => {
       });
     }
   });
+
+  socket.on("exit", ({ room, name }) => {
+
+    const user = removeUserByName(room, name);
+    console.log("exit : " + user);
+    console.log("user name : " + user.name);
+    console.log("user room : " + user.room);
+    if (user) {
+      socket.emit("exit", {});
+
+      socket.broadcast.to(user.room).emit("adminmessage", {
+        user: "Admin",
+        text: `${user.name} has left.`,
+        room: user.room
+      });
+
+      socket.broadcast.to(user.room).emit("roomData", {
+        room: user.room,
+        users: getUsersInRoom(user.room),
+      });
+    }
+  });
+
 });
 
 server.listen(process.env.PORT || 5000, () =>

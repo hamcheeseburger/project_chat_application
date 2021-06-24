@@ -329,17 +329,23 @@ router.post("/roomParticipate", express.json(), function (req, res) {
             });
           }
 
+          if (result.length == 0) {
+            return poolConn.rollback(function () {
+              res.send({ response: "not_exist" }).status(200);
+            });
+          }
+
           roomId = result[0].room_id;
           console.log(result);
           console.log("id :" + roomId);
 
           // participant 데이터 검색(이미 있는 참가자인지 확인)
           var participant_data = [userId, roomId];
-          var exec3 = poolConn.query(
+          var exec2 = poolConn.query(
             "select count(*) as count from PARTICIPANT_TABLE WHERE user_id=? and room_id=?",
             participant_data,
             function (err, result) {
-              console.log("실행된 SQL : " + exec3.sql);
+              console.log("실행된 SQL : " + exec2.sql);
 
               if (err) {
                 console.log("sql 실행 시 에러 발생");
@@ -354,22 +360,106 @@ router.post("/roomParticipate", express.json(), function (req, res) {
               console.log(result);
               participantCheck = result[0].count;
               console.log("check: " + participantCheck);
+
+              if (participantCheck == 0) {
+
+                // Participant 데이터 삽입
+                var participant_data_set = { user_id: userId, room_id: roomId };
+
+                var exec3 = poolConn.query(
+                  "insert into PARTICIPANT_TABLE set ?",
+                  participant_data_set,
+                  function (err, result) {
+                    console.log("실행된 SQL : " + exec3.sql);
+
+                    if (err) {
+                      console.log("sql 실행 시 에러 발생");
+
+                      res.send({ response: "false" }).status(200);
+                      // 실패 시 rollback
+                      return poolConn.rollback(function () {
+                        //throw err;
+                      });
+                    }
+
+                    // 성공 시 commit
+                    poolConn.commit(function (err) {
+                      if (err) {
+                        return poolConn.rollback(function () {
+                          //throw err;
+                        });
+                      }
+                    });
+
+                    // 성공메세지 response
+                    res.send({ response: "true" }).status(200);
+                  }
+                );
+              } else {
+                res.send({ response: "duplicate" }).status(200);
+              }
             }
           );
 
-          // Participant 데이터 삽입
-          var participant_data_set = { user_id: userId, room_id: roomId };
-          var exec3 = poolConn.query(
-            "insert into PARTICIPANT_TABLE set ?",
-            participant_data_set,
+        }
+      );
+
+      // connection release
+      poolConn.release();
+    });
+  });
+});
+
+router.post("/exitRoom", express.json(), function (req, res) {
+  var roomName = req.body.room;
+  var userId = req.body.userId;
+
+
+  db.getPool().getConnection(function (err, poolConn) {
+    if (err) {
+      if (poolConn) {
+        // error 시 connection release
+        poolConn.release();
+      }
+
+      return;
+    }
+
+    console.log("roomName: " + roomName);
+    // Transaction (query를 중첩구조로 실행함)
+    poolConn.beginTransaction(function (err) {
+      var exec = poolConn.query(
+        "select room_id from CHAT_ROOM_TABLE WHERE name=?",
+        roomName,
+        function (err, result) {
+          console.log("실행된 SQL : " + exec.sql);
+
+          if (err) {
+            console.log("sql 실행 시 에러 발생");
+
+            res.send({ response: "false" }).status(200);
+            // 실패 시 rollback
+            return poolConn.rollback(function () {
+              throw err;
+            });
+          }
+
+          roomId = result[0].room_id;
+          console.log("roomId: " + roomId);
+
+          var exit_data_set = [roomId, userId];
+
+          var exec2 = poolConn.query(
+            "delete from PARTICIPANT_TABLE where room_id=? and user_id=?",
+            exit_data_set,
             function (err, result) {
-              console.log("실행된 SQL : " + exec3.sql);
+              console.log("실행된 SQL : " + exec2.sql);
 
               if (err) {
                 console.log("sql 실행 시 에러 발생");
 
                 res.send({ response: "false" }).status(200);
-                // 실패 시 rollback
+                // 실패시 rollback
                 return poolConn.rollback(function () {
                   throw err;
                 });
@@ -395,6 +485,7 @@ router.post("/roomParticipate", express.json(), function (req, res) {
       poolConn.release();
     });
   });
+
 });
 
 router.post("/chatAdd", express.json(), function (req, res) {
