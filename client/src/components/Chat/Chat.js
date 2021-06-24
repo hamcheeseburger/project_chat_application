@@ -53,6 +53,10 @@ const Chat = ({ location, history, props }) => {
     // const { name, password } = queryString.parse(location.search);
 
     socket = io.connect(ENDPOINT);
+
+    if (state.name === undefined) {
+      history.push("/");
+    }
     console.log(state.name);
     console.log(state.password);
 
@@ -153,6 +157,8 @@ const Chat = ({ location, history, props }) => {
 
   const sendMessage = (event) => {
     event.preventDefault();
+    if (message == "") return;
+
     socket.emit("sendMessage", { message, name, room }, () => setMessage(""));
 
     if (message) {
