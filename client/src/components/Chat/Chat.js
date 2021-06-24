@@ -168,7 +168,7 @@ const Chat = ({ location, history, props }) => {
 
           if (response.data.response == "true") {
             //alert("Success");
-          } else {
+          } else if (response.data.response == "false") {
             alert("Fail");
           }
         })
@@ -302,6 +302,7 @@ const Chat = ({ location, history, props }) => {
           } */}
 
           <ChatRooms
+            userId={userId}
             rooms={rooms}
             name={name}
             socket={socket}

@@ -9,8 +9,37 @@ import io from "socket.io-client";
 
 let socket;
 const ENDPOINT = "http://localhost:5000/";
-const ChatRoom = ({ room, name, socket, setRoom, setMessages, getRoomsOfUser }) => {
+const ChatRoom = ({ userId, room, name, socket, setRoom, setMessages, getRoomsOfUser }) => {
 
+  const exitRoom = () => {
+    console.log("exitRoom : " + room);
+    console.log("userId : " + userId);
+    if (room == "") return;
+
+    var result = window.confirm("방에서 퇴장하시겠습니까?");
+
+    if (result == false) return;
+
+    axios
+      .post("http://localhost:5000/exitRoom", {
+        userId: userId,
+        room: room
+      })
+      .then(function (response) {
+        console.log("삭제 : " + response);
+        console.log("삭제response : " + response.data.response);
+        getRoomsOfUser(userId);
+
+      })
+      .catch(function (error) {
+        alert("에러 발생");
+        console.log(error);
+      });
+
+    socket.emit("exit", { room, name }, () => {
+
+    });
+  };
 
   const roomClicked = () => {
     setRoom(room);
@@ -53,9 +82,9 @@ const ChatRoom = ({ room, name, socket, setRoom, setMessages, getRoomsOfUser }) 
         <h3>{room}</h3>
       </div>
       <div className="rightInnerContainer">
-        {/* <a href="/"> */}
-        <img src={closeIcon} alt="close icon" />
-        {/* </a> */}
+        <a href="#" onClick={exitRoom}>
+          <img src={closeIcon} alt="close icon" />
+        </a>
       </div>
     </div>
   );

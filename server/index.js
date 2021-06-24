@@ -50,13 +50,14 @@ io.on("connect", (socket) => {
 
   socket.on("sendMessage", ({ message, name, room }, callback) => {
     const user = getUser(socket.id);
+    if (user) {
+      console.log("room : " + room);
+      console.log("name : " + user.name);
+      // 나를 포함한 모두에게 
+      io.to(room).emit("message", { user: name, text: message });
 
-    console.log("room : " + room);
-    console.log("name : " + user.name);
-    // 나를 포함한 모두에게 
-    io.to(room).emit("message", { user: name, text: message });
-
-    callback();
+      callback();
+    }
   });
 
   socket.on("disconnect", () => {
@@ -78,9 +79,11 @@ io.on("connect", (socket) => {
 
     const user = removeUserByName(room, name);
     console.log("exit : " + user);
-    console.log("user name : " + user.name);
-    console.log("user room : " + user.room);
+
     if (user) {
+      console.log("user name : " + user.name);
+      console.log("user room : " + user.room);
+
       socket.emit("exit", {});
 
       socket.broadcast.to(user.room).emit("adminmessage", {

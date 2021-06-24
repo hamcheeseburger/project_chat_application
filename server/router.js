@@ -443,7 +443,11 @@ router.post("/exitRoom", express.json(), function (req, res) {
               throw err;
             });
           }
-
+          if (result.length == 0) {
+            return poolConn.rollback(function () {
+              res.send({ response: "not_exist" }).status(200);
+            });
+          }
           roomId = result[0].room_id;
           console.log("roomId: " + roomId);
 
@@ -524,7 +528,11 @@ router.post("/chatAdd", express.json(), function (req, res) {
               throw err;
             });
           }
-
+          if (result.length == 0) {
+            return poolConn.rollback(function () {
+              res.send({ response: "not_exist" }).status(200);
+            });
+          }
           roomId = result[0].room_id;
           console.log("roomId: " + roomId);
 
