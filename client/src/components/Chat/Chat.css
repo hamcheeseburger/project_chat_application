@@ -3,6 +3,44 @@
   height:25px;
   width:25px;
   border-radius:50%;
+  background-color: #50d8d7;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-weight: 500;
+  color: white;
+}
+
+#participation{
+  height:25px;
+  width:50px;
+  background-color: #547aa5;
+  border-radius: 10px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+  0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+  Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+font-weight: 500;
+color: white;
+}
+
+button {
+  padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+button:focus {
+  outline: 0;
+}
+
+#participation:hover{
+  background-color:#347efd;
+  /* border:none; */
 }
 
 #plus:hover{
@@ -19,6 +57,7 @@ li{
   background-color: #e3f2fd;
   padding: 10px;
   border-bottom: solid 1px #c5c5c5;
+  overflow: hidden;
 }
 
 .roomInput {
@@ -34,12 +73,16 @@ li{
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #1a1a1d;
+  /*background-color: #1A1A1D;*/
+  background-image: url(C:\Users\thdwo\Desktop\node\git\project_chat_application\client\src\icons\main2.PNG);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .myRoomText {
   font-weight: bold;
   font-size: 20px;
+  
 }
 
 .roomContainer {
@@ -63,7 +106,9 @@ li{
 }
 
 .chatrooms {
-  height: 345px;
+  /* height: 345px; */
+  height: 70%;
+
   overflow-y:auto;
 }
 

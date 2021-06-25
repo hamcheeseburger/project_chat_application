@@ -61,7 +61,8 @@ export default function SignUp({ history }) {
 
                 <button onClick={onSubmit} className={'button mt-20'} type="submit">Sign Up</button>
                 <Link to={`/`}>
-                    <p>HOME</p>
+                    <button className={'button mt-20'} type="submit">HOME</button>
+                    
                 </Link>
             </div>
         </div>

@@ -2,6 +2,7 @@ import React from 'react';
 
 import ScrollToBottom from 'react-scroll-to-bottom';
 import ChatRoom from './ChatRoom';
+import "./ChatRooms.css";
 
 const ChatRooms = ({ userId, rooms, name, socket, setRoom, setMessages, getRoomsOfUser }) => (
     <ScrollToBottom className="rooms">

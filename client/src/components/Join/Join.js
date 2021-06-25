@@ -36,7 +36,8 @@ export default function SignIn() {
         </Link> */}
 
         <Link to={`/signUp`}>
-          <p>SIGN UP</p>
+          <button className={'button mt-20'} type="submit">Sign UP</button>
+        
         </Link>
       </div>
     </div>

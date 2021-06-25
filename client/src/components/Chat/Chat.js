@@ -290,7 +290,7 @@ const Chat = ({ location, history, props }) => {
       <div className="roomContainer">
         <UserInfoBar name={name} />
         <div className="plusDiv">
-          <a className="myRoomText">My Rooms</a>
+          <a className="myRoomText">My Rooms </a>
           <button id="plus" onClick={openPlusRoom}>
             +
           </button>
