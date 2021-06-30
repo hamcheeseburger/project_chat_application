@@ -98,6 +98,12 @@ const Chat = ({ location, history, props }) => {
   }, [name, password]);
 
   useEffect(() => {
+    socket.on("edit", ({ roomName }) => {
+      console.log("edit");
+      console.log("roomNameEdit socket: " + roomName);
+      setRoom(roomName);
+    });
+
     socket.on("exit", (message) => {
       console.log("exit");
       setRoom("");

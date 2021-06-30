@@ -80,8 +80,8 @@ const InfoBar = (props) => {
         room: room,
       })
       .then(function (response) {
-        console.log(response);
-        console.log(response.data.response);
+        console.log("수정 : " + response);
+        console.log("수정response : " + response.data.response);
 
         if (response.data.response == "true") {
           alert("The Room Edited");
@@ -94,6 +94,9 @@ const InfoBar = (props) => {
         alert("에러 발생");
         console.log(error);
       });
+
+    console.log("InfoBar의 roomName: " + roomName);
+    props.socket.emit("edit", { roomName }, () => {});
   };
 
   return (

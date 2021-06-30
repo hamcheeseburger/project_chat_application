@@ -424,7 +424,6 @@ router.post("/roomEdit", express.json(), function (req, res) {
       return;
     }
 
-    console.log("roomEdit 부분 roomName: " + roomName);
     // Transaction (query를 중첩구조로 실행함)
     poolConn.beginTransaction(function (err) {
       // RoomId 찾기
