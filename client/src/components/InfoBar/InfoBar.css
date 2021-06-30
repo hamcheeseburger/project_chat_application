@@ -26,3 +26,12 @@
 .onlineIcon {
   margin-right: 5%;
 }
+
+.editIconBtn {
+  margin-left: 3%;
+}
+
+.editIcon {
+  height: 20px;
+  width: 20px;
+}

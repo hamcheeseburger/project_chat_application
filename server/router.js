@@ -39,7 +39,7 @@ router.post("/signIn", express.json(), function (req, res, next) {
         if (err) {
           // callback(err, null);
           console.log("error");
-          console.log(err)
+          console.log(err);
           return;
         }
 
@@ -47,7 +47,7 @@ router.post("/signIn", express.json(), function (req, res, next) {
           console.log("사용자 찾음");
           var string = JSON.stringify(rows);
           var json = JSON.parse(string);
-          console.log(json[0].user_id)
+          console.log(json[0].user_id);
           res.json({ userId: json[0].user_id });
           //socket.emit("login", json[0].user_id);
         } else {
@@ -362,7 +362,6 @@ router.post("/roomParticipate", express.json(), function (req, res) {
               console.log("check: " + participantCheck);
 
               if (participantCheck == 0) {
-
                 // Participant 데이터 삽입
                 var participant_data_set = { user_id: userId, room_id: roomId };
 
@@ -400,7 +399,88 @@ router.post("/roomParticipate", express.json(), function (req, res) {
               }
             }
           );
+        }
+      );
 
+      // connection release
+      poolConn.release();
+    });
+  });
+});
+
+router.post("/roomEdit", express.json(), function (req, res) {
+  var newRoomName = req.body.roomName;
+  var newRoomPassword = req.body.roomPass;
+  var roomName = req.body.room;
+  var roomId = -1;
+
+  db.getPool().getConnection(function (err, poolConn) {
+    if (err) {
+      if (poolConn) {
+        // error 시 connection release
+        poolConn.release();
+      }
+
+      return;
+    }
+
+    console.log("roomEdit 부분 roomName: " + roomName);
+    // Transaction (query를 중첩구조로 실행함)
+    poolConn.beginTransaction(function (err) {
+      // RoomId 찾기
+      var exec = poolConn.query(
+        "select room_id from CHAT_ROOM_TABLE WHERE name=?",
+        roomName,
+        function (err, result) {
+          console.log("roomId 찾기 실행된 SQL : " + exec.sql);
+
+          if (err) {
+            console.log("sql 실행 시 에러 발생");
+
+            res.send({ response: "false" }).status(200);
+            // 실패 시 rollback
+            return poolConn.rollback(function () {
+              throw err;
+            });
+          }
+          if (result.length == 0) {
+            return poolConn.rollback(function () {
+              res.send({ response: "not_exist" }).status(200);
+            });
+          }
+          roomId = result[0].room_id;
+          console.log("roomId: " + roomId);
+
+          var newRoomData = [newRoomName, newRoomPassword, roomId];
+
+          var exec2 = poolConn.query(
+            "update CHAT_ROOM_TABLE set name=?, password=? where room_id=?",
+            newRoomData,
+            function (err, result) {
+              console.log("실행된 SQL : " + exec2.sql);
+
+              if (err) {
+                console.log("sql 실행 시 에러 발생");
+
+                res.send({ response: "false" }).status(200);
+                // 실패시 rollback
+                return poolConn.rollback(function () {
+                  throw err;
+                });
+              }
+
+              // 성공 시 commit
+              poolConn.commit(function (err) {
+                if (err) {
+                  return poolConn.rollback(function () {
+                    throw err;
+                  });
+                }
+              });
+
+              res.send({ response: "true" }).status(200);
+            }
+          );
         }
       );
 
@@ -413,7 +493,6 @@ router.post("/roomParticipate", express.json(), function (req, res) {
 router.post("/exitRoom", express.json(), function (req, res) {
   var roomName = req.body.room;
   var userId = req.body.userId;
-
 
   db.getPool().getConnection(function (err, poolConn) {
     if (err) {
@@ -489,7 +568,6 @@ router.post("/exitRoom", express.json(), function (req, res) {
       poolConn.release();
     });
   });
-
 });
 
 router.post("/chatAdd", express.json(), function (req, res) {

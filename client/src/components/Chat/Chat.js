@@ -14,7 +14,7 @@ import ChatRooms from "../ChatRoom/ChatRooms";
 import ChatRoom from "../ChatRoom/ChatRoom";
 import Modal from "../Modal/Modal";
 import ModalParticipate from "../ModalParticipate/ModalParticipate";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import plusIcon from "../../icons/plus.png";
@@ -64,20 +64,17 @@ const Chat = ({ location, history, props }) => {
     // setRoom("임시 방이름");
     setName(state.name);
     setPassword(state.password);
-
   }, [ENDPOINT, location.search]);
-
 
   useEffect(() => {
     if (name != "" && password != "") {
-
       console.log(name);
       console.log(password);
       // axios post
       axios
         .post("http://localhost:5000/signIn", {
           loginId: name,
-          password: password
+          password: password,
         })
         .then(function (response) {
           console.log(response);
@@ -143,11 +140,9 @@ const Chat = ({ location, history, props }) => {
         userId: message,
       })
       .then(function (response) {
-
         var results = response.data.rows;
         console.log(results);
         setRooms(response.data.rows);
-
       })
       .catch(function (error) {
         alert("에러 발생");
@@ -183,7 +178,6 @@ const Chat = ({ location, history, props }) => {
           console.log(error);
         });
     }
-
   };
 
   // room 추가
@@ -270,10 +264,8 @@ const Chat = ({ location, history, props }) => {
           //   alert("Participation Fail.");
         } else if (response.data.response == "duplicate") {
           alert("Already participated.");
-
         } else if (response.data.response == "not_exist") {
           alert("Room name or password incorrect..");
-
         } else {
           alert("Fail");
         }
@@ -322,8 +314,10 @@ const Chat = ({ location, history, props }) => {
         <InfoBar
           room={room}
           userId={userId}
-          socket={socket} name={name}
-          getRoomsOfUser={getRoomsOfUser} />
+          socket={socket}
+          name={name}
+          getRoomsOfUser={getRoomsOfUser}
+        />
 
         <Messages messages={messages} name={name} />
         <Input
