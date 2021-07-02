@@ -21,7 +21,7 @@ const ChatRoom = ({ userId, room, name, socket, setRoom, setMessages, getRoomsOf
     if (result == false) return;
 
     axios
-      .post("http://localhost:5000/exitRoom", {
+      .post(ENDPOINT + "exitRoom", {
         userId: userId,
         room: room
       })
@@ -56,7 +56,7 @@ const ChatRoom = ({ userId, room, name, socket, setRoom, setMessages, getRoomsOf
     console.log("requestChats");
     // return new Promise((resolve, reject) => {
     axios
-      .post("http://localhost:5000/getChatsInRoom", {
+      .post(ENDPOINT + "getChatsInRoom", {
         roomName: roomName
         // name: name,
         // socketId: socket.id

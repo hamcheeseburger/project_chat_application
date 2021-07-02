@@ -72,7 +72,7 @@ const Chat = ({ location, history, props }) => {
       console.log(password);
       // axios post
       axios
-        .post("http://localhost:5000/signIn", {
+        .post(ENDPOINT + "signIn", {
           loginId: name,
           password: password,
         })
@@ -142,7 +142,7 @@ const Chat = ({ location, history, props }) => {
     // axios post
     // @문제 : setUserId()가 안먹힌다.
     axios
-      .post("http://localhost:5000/getRooms", {
+      .post(ENDPOINT + "getRooms", {
         userId: message,
       })
       .then(function (response) {
@@ -164,7 +164,7 @@ const Chat = ({ location, history, props }) => {
 
     if (message) {
       axios
-        .post("http://localhost:5000/chatAdd", {
+        .post(ENDPOINT + "chatAdd", {
           room: room,
           userId: userId,
           message: message,
@@ -211,7 +211,7 @@ const Chat = ({ location, history, props }) => {
 
     // axios post
     axios
-      .post("http://localhost:5000/roomAdd", {
+      .post(ENDPOINT + "roomAdd", {
         plusRoomName: plusRoomName,
         plusRoomPassword: plusRoomPass,
         userId: userId,
@@ -253,7 +253,7 @@ const Chat = ({ location, history, props }) => {
 
     // axios post
     axios
-      .post("http://localhost:5000/roomParticipate", {
+      .post(ENDPOINT + "roomParticipate", {
         participateRoomName: participateRoomName,
         participateRoomPass: participateRoomPass,
         userId: userId,

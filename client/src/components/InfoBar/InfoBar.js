@@ -8,6 +8,7 @@ import ModalEdit from "../ModalEdit/ModalEdit";
 import axios from "axios";
 import "./InfoBar.css";
 
+const ENDPOINT = "http://localhost:5000/";
 const InfoBar = (props) => {
   const [editRoomNameOpen, setEditRoomNameOpen] = useState(false);
   const [roomName, setRoomName] = useState("");
@@ -27,7 +28,7 @@ const InfoBar = (props) => {
     if (result == false) return;
 
     axios
-      .post("http://localhost:5000/exitRoom", {
+      .post(ENDPOINT + "exitRoom", {
         userId: userId,
         room: room,
       })
@@ -41,7 +42,7 @@ const InfoBar = (props) => {
         console.log(error);
       });
 
-    props.socket.emit("exit", { room, name }, () => {});
+    props.socket.emit("exit", { room, name }, () => { });
   };
 
   const openEditRoomName = () => {
@@ -73,7 +74,7 @@ const InfoBar = (props) => {
 
     // axios post
     axios
-      .post("http://localhost:5000/roomEdit", {
+      .post(ENDPOINT + "roomEdit", {
         roomName: roomName,
         roomPass: roomPass,
         roomPassCheck: roomPassCheck,
@@ -86,6 +87,7 @@ const InfoBar = (props) => {
         if (response.data.response == "true") {
           alert("The Room Edited");
           editRoomNameClose();
+          props.getRoomsOfUser(props.userId);
         } else {
           alert("The room is already exist.");
         }
@@ -96,7 +98,7 @@ const InfoBar = (props) => {
       });
 
     console.log("InfoBar의 roomName: " + roomName);
-    props.socket.emit("edit", { roomName }, () => {});
+    props.socket.emit("edit", { roomName }, () => { });
   };
 
   return (
