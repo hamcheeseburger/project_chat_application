@@ -1,4 +1,6 @@
 /netlify
+
 # Local Netlify folder
 .netlify
+
 ./server/DbClass.js
