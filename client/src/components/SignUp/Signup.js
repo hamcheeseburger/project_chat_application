@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 
 // import './Join.css';
-// const ENDPOINT = "http://localhost:5000/";
-const ENDPOINT = 'https://our-chat-server.herokuapp.com/';
+const ENDPOINT = "http://localhost:5000/";
+// const ENDPOINT = 'https://our-chat-server.herokuapp.com/';
 export default function SignUp({ history }) {
     const [signId, setSignId] = useState('');
     const [signName, setSignName] = useState('');
