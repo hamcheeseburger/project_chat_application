@@ -20,8 +20,8 @@ import { Link } from "react-router-dom";
 import plusIcon from "../../icons/plus.png";
 import "./Chat.css";
 
-// const ENDPOINT = 'https://project-chat-application.herokuapp.com/';
-const ENDPOINT = "http://localhost:5000/";
+const ENDPOINT = 'https://our-chat-server.herokuapp.com/';
+// const ENDPOINT = "http://localhost:5000/";
 
 let socket;
 
