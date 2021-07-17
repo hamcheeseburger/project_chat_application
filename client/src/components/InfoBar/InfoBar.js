@@ -8,8 +8,14 @@ import ModalEdit from "../ModalEdit/ModalEdit";
 import axios from "axios";
 import "./InfoBar.css";
 
+<<<<<<< HEAD
 const ENDPOINT = "http://localhost:5000/";
 // const ENDPOINT = 'https://our-chat-server.herokuapp.com/';
+=======
+// const ENDPOINT = "http://localhost:5000/";
+const ENDPOINT = 'https://our-chat-server.herokuapp.com/';
+
+>>>>>>> b2fb0159f7b173a2373e5e1fed32265448aec8f5
 const InfoBar = (props) => {
   const [editRoomNameOpen, setEditRoomNameOpen] = useState(false);
   const [roomName, setRoomName] = useState("");

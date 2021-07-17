@@ -1,3 +1,4 @@
+
 class DbClass {
     constructor() {
         this.pool = require('mysql').createPool({
@@ -16,5 +17,4 @@ var proto = DbClass.prototype;
 proto.getPool = function () {
     return this.pool;
 };
-
 module.exports = DbClass;

@@ -3,8 +3,14 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 
 // import './Join.css';
+<<<<<<< HEAD
 const ENDPOINT = "http://localhost:5000/";
 // const ENDPOINT = 'https://our-chat-server.herokuapp.com/';
+=======
+// const ENDPOINT = "http://localhost:5000/";
+const ENDPOINT = 'https://our-chat-server.herokuapp.com/';
+
+>>>>>>> b2fb0159f7b173a2373e5e1fed32265448aec8f5
 export default function SignUp({ history }) {
     const [signId, setSignId] = useState('');
     const [signName, setSignName] = useState('');
@@ -48,10 +54,10 @@ export default function SignUp({ history }) {
             <div className="joinInnerContainer">
                 <h1 className="heading">Sign Up</h1>
                 <div>
-                    <input placeholder="id" className="joinInput" type="text" onChange={(event) => setSignId(event.target.value)}/>
+                    <input placeholder="id" className="joinInput" type="text" onChange={(event) => setSignId(event.target.value)} />
                 </div>
                 <div>
-                    <input placeholder="password" className="joinInput mt-20" type="password" onChange={(event) => setSignPassword(event.target.value)}/>
+                    <input placeholder="password" className="joinInput mt-20" type="password" onChange={(event) => setSignPassword(event.target.value)} />
                 </div>
                 <div>
                     <input placeholder="password check" className="joinInput mt-20" type="password" onChange={(event) => setSignPasswordCheck(event.target.value)} />
@@ -63,7 +69,7 @@ export default function SignUp({ history }) {
                 <button onClick={onSubmit} className={'button mt-20'} type="submit">Sign Up</button>
                 <Link to={`/`}>
                     <button className={'button mt-20'} type="submit">HOME</button>
-                    
+
                 </Link>
             </div>
         </div>
