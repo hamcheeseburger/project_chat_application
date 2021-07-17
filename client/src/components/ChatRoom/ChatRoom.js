@@ -8,7 +8,8 @@ import "./ChatRoom.css";
 import io from "socket.io-client";
 
 let socket;
-const ENDPOINT = "http://localhost:5000/";
+const ENDPOINT = 'https://our-chat-server.herokuapp.com/';
+// const ENDPOINT = "http://localhost:5000/";
 const ChatRoom = ({ userId, room, name, socket, setRoom, setMessages, getRoomsOfUser }) => {
 
   const exitRoom = () => {
